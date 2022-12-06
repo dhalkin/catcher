@@ -1,0 +1,66 @@
+version: '3'
+services:
+  
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: catcher/php
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+      PHP_IDE_CONFIG: "serverName=app"
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+    networks:
+      - catcher-network
+
+#  #Nginx Service
+#  webserver:
+#    image: nginx:alpine
+#    container_name: webserver
+#    restart: unless-stopped
+#    tty: true
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#      - ./:/var/www
+#      - ./nginx/conf.d/:/etc/nginx/conf.d/
+#    networks:
+#      - catcher-network
+
+  #MySQL Service
+  db:
+    image: mysql:8.0.12
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "127.0.0.1:3301:3306/tcp"
+    environment:
+      MYSQL_DATABASE: catcher
+      MYSQL_ROOT_PASSWORD: rootpassword
+      SERVICE_NAME: mysql
+    volumes:
+      - ~/mysql:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - catcher-network
+
+#Docker Networks
+networks:
+  catcher-network:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local
