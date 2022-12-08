@@ -39,8 +39,8 @@ class DataReceiver
         $list = implode(",", $symbolList);
         $query = [
             'api_key' => $this->config->get('api.cryptorank_key'),
-            'sort' => '-rank',
-            'limit' => 300,
+            //'sort' => '-rank',
+            'limit' => count($symbolList),
             'symbols' => $list
         ];
         

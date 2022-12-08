@@ -2,17 +2,21 @@
 
 namespace App\Services;
 
+use App\Entity\Bot\SessionData;
 use DefStudio\Telegraph\Models\TelegraphChat;
+use App\Entity\Bot\Symbol;
 
 /**
  *
  */
 class BotSender
 {
-    /**
-     * @var array
-     */
-    private array $message = [];
+    private const TRIGGER_GROW_PERCENT_PRICE = 5;
+    private const TRIGGER_GROW_PERCENT_VOLUME_24H = 10;
+    
+    private const PRICE_UP = "\xE2\xAC\x86";
+    private const PRICE_DOWN = "\xE2\xAC\x87";
+    private const UP_DOWN_ARROW = "\xE2\x86\x95";
     
     /**
      * @var TelegraphChat
@@ -28,23 +32,45 @@ class BotSender
     }
     
     /**
-     * @param string $message
+     * @param SessionData $sessionData
      * @return void
      */
-    public function addMessage(string $message): void
+    public function sendSessionData(SessionData $sessionData): void
     {
-        $this->message[] = $message . "\n";
+        $message[] = "<i><u>Price " . self::UP_DOWN_ARROW . " " . $sessionData->getFilter()->getChangePrice() .
+            "% or Vol24h up > " . $sessionData->getFilter()->getChangeVolume() . "</u></i>";
+        
+        /** @var Symbol $symbol */
+        foreach ($sessionData->getSymbols() as $symbol) {
+            
+            $message[] = "<b>" . $symbol->getName() . "</b> (" . $symbol->getTime() . ")  <code>" . $symbol->getPrice() . "</code>";
+            
+            $priceMessage = $symbol->getPricePercent() > 0 ? "Price " . self::PRICE_UP : "Price " . self::PRICE_DOWN;
+            $message[] = $priceMessage . ": <b>" . $symbol->getPricePercent() . "</b>%";
+            
+            $volumeMessage = $symbol->getVolumePercent() > 0 ? "Volume " . self::PRICE_UP : "Volume " . self::PRICE_DOWN;
+            $message[] = $volumeMessage . ": <b>" . $symbol->getVolumePercent() . "</b>%";
+            $message[] = str_repeat('-', 26) . " ";
+            
+        }
+        
+        $this->tChat->html(implode("\n", $message))->send();
     }
     
     /**
-     * @param string $entity
-     * @return void
+     * @param Symbol $symbol
+     * @return bool
      */
-    public function sendAndFlush(string $entity): void
+    private function isSymbolForSend(Symbol $symbol): bool
     {
-        if (count($this->message) > 0) {
-            $this->tChat->html("<strong>" . $entity . "</strong>\n" . implode("", $this->message))->send();
+        if (
+            $symbol->getPricePercent() > self::TRIGGER_GROW_PERCENT_PRICE ||
+            $symbol->getPricePercent() < -1 * abs(self::TRIGGER_GROW_PERCENT_PRICE) ||
+            $symbol->getVolumePercent() > self::TRIGGER_GROW_PERCENT_VOLUME_24H
+        ) {
+            return true;
         }
-        $this->message = [];
+        
+        return false;
     }
 }

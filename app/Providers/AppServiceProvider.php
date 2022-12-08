@@ -41,16 +41,11 @@ class AppServiceProvider extends ServiceProvider
             return new BotSender(TelegraphChat::find(1));
         });
         
-        $this->app->bind(Analyzer::class, function () {
-           return new Analyzer($this->app->make(BotSender::class));
-        });
-        
-        
         $this->app->bind(DataProcessor::class, function () {
             return new DataProcessor(
                 $this->app->make(DataMapper::class),
                 $this->app->make(DataReceiver::class),
-                $this->app->make(Analyzer::class),
+                $this->app->make(Analyzer::class)
             );
         });
         

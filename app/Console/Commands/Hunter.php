@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Services\BotFilter;
+use App\Services\BotSender;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 use App\Services\DataProcessor;
@@ -27,7 +29,7 @@ class Hunter extends Command
     private bool $shouldKeepRunning = true;
     
     
-    private const ATTEMPTS = 4;
+    private const ATTEMPTS = 12;
     public const SEC_BETWEEN_ATTEMPTS = 600;
     
     /**
@@ -36,12 +38,25 @@ class Hunter extends Command
     private DataProcessor $dataProcessor;
     
     /**
-     * @param DataProcessor $dataProcessor
+     * @var BotSender
      */
-    public function __construct(DataProcessor $dataProcessor)
+    private BotSender $botSender;
+    
+    /**
+     * @var BotFilter
+     */
+    private BotFilter $botFilter;
+    
+    /**
+     * @param DataProcessor $dataProcessor
+     * @param BotSender $botSender
+     */
+    public function __construct(DataProcessor $dataProcessor, BotSender $botSender, BotFilter $botFilter)
     {
         parent::__construct();
         $this->dataProcessor = $dataProcessor;
+        $this->botSender = $botSender;
+        $this->botFilter = $botFilter;
     }
     
     /**
@@ -58,53 +73,41 @@ class Hunter extends Command
 //
 //        }
         
-        
         // will do  max cycles
         for ($i = 1; $i <= self::ATTEMPTS; $i++) {
             
             $this->line('Getting data');
-            $result = $this->dataProcessor->processCryptoRank();
-            
-            if ($result['status']['code'] == 200) {
+            try {
+                $result = $this->dataProcessor->processCryptoRank();
                 $this->info('Status:' . $result['status']['code'] . " Costs:" . $result['status']['creditsCost']);
-                $this->drawAnalyzeResult($result['analyze']);
                 
-            } else {
-                $this->warn('Status:' . $result['status']['code']);
+                $filteredSd = $this->botFilter->filterOutputData($result['sessionData']);
+                $this->botSender->sendSessionData($filteredSd);
+                
+            } catch (Throwable $e) {
+                throw new \RuntimeException($e->getMessage());
             }
             
             // if last cycle, skip progress bar
-            if ($i == self::ATTEMPTS){
+            if ($i == self::ATTEMPTS) {
                 continue;
             }
             
             // wait progress bar
             $this->progressBar();
         }
-    
+        
         $this->line('Stop working by end attempts');
         
         return Command::SUCCESS;
     }
     
     /**
-     * @param array $data
      * @return void
      */
-    private function drawAnalyzeResult(array $data)
+    private function progressBar(): void
     {
-        $this->line('Analyze data:');
-        foreach ($data as $symbol => $val) {
-            $this->line($symbol . " " . $val);
-        }
-    }
-    
-    /**
-     * @return void
-     */
-    private function progressBar()
-    {
-        $this->line('Waiting:');
+        $this->line('Waiting:' . self::SEC_BETWEEN_ATTEMPTS . 'sec');
         $pb = range(1, self::SEC_BETWEEN_ATTEMPTS);
         $bar = $this->output->createProgressBar(count($pb));
         $bar->start();

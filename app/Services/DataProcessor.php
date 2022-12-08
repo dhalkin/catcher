@@ -2,10 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\NomicsBinanceUsd;
 use App\Models\Symbol;
-use App\Models\CryptorankResults;
 use GuzzleHttp\Exception\GuzzleException;
+use App\Entity\Bot\SessionData;
 
 /**
  *
@@ -32,8 +31,11 @@ class DataProcessor
      * @param DataReceiver $dataReceiver
      * @param Analyzer $analyzer
      */
-    public function __construct(DataMapper $dataMapper, DataReceiver $dataReceiver, Analyzer $analyzer)
-    {
+    public function __construct(
+        DataMapper $dataMapper,
+        DataReceiver $dataReceiver,
+        Analyzer $analyzer
+    ) {
         $this->dataMapper = $dataMapper;
         $this->dataReceiver = $dataReceiver;
         $this->analyzer = $analyzer;
@@ -48,7 +50,7 @@ class DataProcessor
         $processorResponse = [];
         $nomicsList = Symbol::select('symbol')->distinct()->pluck('symbol')->toArray();
         $response = $this->dataReceiver->getCryptoRankCurrencies($nomicsList);
-        $analyze = null;
+        $sessionData = new SessionData();
         
         foreach ($response['data'] as $cryptoRankItem) {
             // save all observation if exists in nomicslist
@@ -56,16 +58,9 @@ class DataProcessor
                 $observation = $this->dataMapper->mapCryptorankItemToObservation($cryptoRankItem);
                 
                 // analyze
-                $analyzeStr = $this->analyzer->complexPumpAnalyze($observation);
-                if ($analyzeStr !== null) {
-                    $analyze[$observation->symbol] = $analyzeStr;
-        
-                    // save result
-                    $cryptoResults = new CryptorankResults();
-                    $cryptoResults->setDateTime($observation->date_time);
-                    $cryptoResults->setSymbol($observation->symbol);
-                    $cryptoResults->setResult($analyzeStr);
-                    $cryptoResults->save();
+                $symbol = $this->analyzer->getCalculatedSymbol($observation);
+                if ($symbol) {
+                    $sessionData->addSymbol($symbol);
                 }
                 
                 // save after analyse
@@ -74,7 +69,7 @@ class DataProcessor
         }
         
         $processorResponse['status'] = (array)$response['status'];
-        $processorResponse['analyze'] = $analyze ?? [];
+        $processorResponse['sessionData'] = $sessionData;
         
         return $processorResponse;
     }

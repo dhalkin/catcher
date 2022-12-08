@@ -5,78 +5,34 @@ namespace App\Services;
 use App\Models\CryptorankObservation;
 use Illuminate\Support\Carbon;
 use Carbon\CarbonInterface;
+use App\Entity\Bot\Symbol;
 
 /**
  *
  */
 class Analyzer
 {
-    
-    private const TRIGGER_GROW_PERCENT_PRICE = 5;
-    private const TRIGGER_GROW_PERCENT_VOLUME_24H = 5;
-    
-    /**
-     * @var BotSender
-     */
-    private BotSender $botSender;
-    
-    /**
-     * @param BotSender $botSender
-     */
-    public function __construct(BotSender $botSender)
-    {
-        $this->botSender = $botSender;
-    }
-    
     /**
      * @param CryptorankObservation $currentObservation
-     * @return null|string
+     * @return null|Symbol
      */
-    public function complexPumpAnalyze(CryptorankObservation $currentObservation): ?string
+    public function getCalculatedSymbol(CryptorankObservation $currentObservation): ?Symbol
     {
-        $result = [];
-        // base in received data ?
-        $result[] = 'pCh24h  (' . $currentObservation->percentChange24h . ')';
-        
-        // base on history data
+        //can do calculation only when history data exists
         $previous = $this->getPreviousObservation($currentObservation);
         if ($previous) {
-            $time = $this->getDiffTime($currentObservation, $previous);
-            $result[] = $time . ' >>';
+            $botItem = new Symbol($currentObservation->symbol);
+            $botItem->setTime($this->getDiffTime($currentObservation, $previous));
             
             // percent price change in a timer
-            $percentPriceChange = $this->percentagePriceChange($currentObservation, $previous);
-            if ($previous->price < $currentObservation->price) {
-                // bot here
-                if ($percentPriceChange > self::TRIGGER_GROW_PERCENT_PRICE) {
-                    $this->botSender->addMessage("Price up (" . $time . ") <strong>" . $percentPriceChange . "</strong>%");
-                }
-                $result[] = 'price up(' . $percentPriceChange . '%)';
-            } else {
-                $result[] = 'price down(' . $percentPriceChange . '%)';
-            }
+            $botItem->setPricePercent($this->percentagePriceChange($currentObservation, $previous));
             
             // percent volume change in a timer
-            $percentVolumeChange = $this->percentageVolumeChange($currentObservation, $previous);
-            if ($previous->volume24h < $currentObservation->volume24h) {
-                // bot here
-                if ($percentVolumeChange > self::TRIGGER_GROW_PERCENT_VOLUME_24H) {
-                    $this->botSender->addMessage("Volume24 up (" . $time . ") <strong>" . $percentVolumeChange . "</strong>%");
-                }
-                $result[] = 'volume24h up (' . $percentVolumeChange . '%)';
-            } else {
-                $result[] = 'volume24h down (' . $percentVolumeChange . '%)';
-            }
-            
-            // go deep
-            // get history
-            
-            
-            // send bot stats
-            $this->botSender->sendAndFlush($currentObservation->symbol);
+            $botItem->setVolumePercent($this->percentageVolumeChange($currentObservation, $previous));
+            $botItem->setPrice($currentObservation->price);
         }
         
-        return (count($result) > 0) ? implode(" | ", $result) : null;
+        return $botItem ?? null;
     }
     
     /**
@@ -96,8 +52,6 @@ class Analyzer
         
         return null;
     }
-    
-    
     
     /**
      * @param CryptorankObservation $current
