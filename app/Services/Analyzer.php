@@ -23,12 +23,12 @@ class Analyzer
         if ($previous) {
             $botItem = new Symbol($currentObservation->symbol);
             $botItem->setTime($this->getDiffTime($currentObservation, $previous));
-            
             // percent price change in a timer
             $botItem->setPricePercent($this->percentagePriceChange($currentObservation, $previous));
-            
             // percent volume change in a timer
             $botItem->setVolumePercent($this->percentageVolumeChange($currentObservation, $previous));
+            // circulation supply  change in a timer
+            $botItem->setCirculationPercent($this->getCirculatingSupplyChange($currentObservation, $previous));
             $botItem->setPrice($currentObservation->price);
         }
         
@@ -82,9 +82,22 @@ class Analyzer
     /**
      * @param CryptorankObservation $current
      * @param CryptorankObservation $previous
+     * @return float
+     */
+    private function getCirculatingSupplyChange(CryptorankObservation $current, CryptorankObservation $previous): float
+    {
+        $diff = $current->circulatingSupply - $previous->circulatingSupply;
+        $onePercent = $previous->circulatingSupply / 100;
+        
+        return ($diff != 0) ? round($diff / $onePercent, 3) : 0;
+    }
+    
+    /**
+     * @param CryptorankObservation $current
+     * @param CryptorankObservation $previous
      * @return string
      */
-    public function getDiffTime(CryptorankObservation $current, CryptorankObservation $previous): string
+    private function getDiffTime(CryptorankObservation $current, CryptorankObservation $previous): string
     {
         $startTime = Carbon::parse($previous->date_time);
         $finishTime = Carbon::parse($current->date_time);

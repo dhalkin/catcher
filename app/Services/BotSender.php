@@ -11,9 +11,6 @@ use App\Entity\Bot\Symbol;
  */
 class BotSender
 {
-    private const TRIGGER_GROW_PERCENT_PRICE = 5;
-    private const TRIGGER_GROW_PERCENT_VOLUME_24H = 10;
-    
     private const PRICE_UP = "\xE2\xAC\x86";
     private const PRICE_DOWN = "\xE2\xAC\x87";
     private const UP_DOWN_ARROW = "\xE2\x86\x95";
@@ -50,27 +47,14 @@ class BotSender
             
             $volumeMessage = $symbol->getVolumePercent() > 0 ? "Volume " . self::PRICE_UP : "Volume " . self::PRICE_DOWN;
             $message[] = $volumeMessage . ": <b>" . $symbol->getVolumePercent() . "</b>%";
-            $message[] = str_repeat('-', 26) . " ";
             
+            if ($symbol->getCirculationPercent() != 0) {
+                $cMessage = ($symbol->getCirculationPercent() > 0) ? self::PRICE_UP : self::PRICE_DOWN;
+                $message[] = "Circulating supply: " . $cMessage . "<b>" . $symbol->getCirculationPercent() . "</b>%";
+            }
+            $message[] = str_repeat('-', 26) . " ";
         }
         
         $this->tChat->html(implode("\n", $message))->send();
-    }
-    
-    /**
-     * @param Symbol $symbol
-     * @return bool
-     */
-    private function isSymbolForSend(Symbol $symbol): bool
-    {
-        if (
-            $symbol->getPricePercent() > self::TRIGGER_GROW_PERCENT_PRICE ||
-            $symbol->getPricePercent() < -1 * abs(self::TRIGGER_GROW_PERCENT_PRICE) ||
-            $symbol->getVolumePercent() > self::TRIGGER_GROW_PERCENT_VOLUME_24H
-        ) {
-            return true;
-        }
-        
-        return false;
     }
 }
