@@ -14,11 +14,12 @@ class DataMapper
      * @param \stdClass $itemCryptorank
      * @return CryptorankObservation
      */
-    public function mapCryptorankItemToObservation(\stdClass $itemCryptorank): CryptorankObservation
+    public function mapCryptorankItemToObservation(\stdClass $itemCryptorank, string $sessionTime): CryptorankObservation
     {
         $result = new CryptorankObservation();
         $result->cryptorank_id = $itemCryptorank->id;
-        $result->date_time = Carbon::parse($itemCryptorank->lastUpdated);
+        $result->sessionTime = Carbon::parse($sessionTime);
+        $result->lastUpdated = Carbon::parse($itemCryptorank->lastUpdated);
         $result->name = $itemCryptorank->name;
         $result->symbol = $itemCryptorank->symbol;
         $result->type = $itemCryptorank->type;

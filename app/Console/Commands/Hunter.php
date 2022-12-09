@@ -80,11 +80,11 @@ class Hunter extends Command
             try {
                 $result = $this->dataProcessor->processCryptoRank();
                 $this->info('Status:' . $result['status']['code'] . " Costs:" . $result['status']['creditsCost']);
-                
+                // send only items that accomplish filter conditions
                 $filteredSd = $this->botFilter->filterOutputData($result['sessionData']);
                 $this->botSender->sendSessionData($filteredSd);
                 
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 throw new \RuntimeException($e->getMessage());
             }
             

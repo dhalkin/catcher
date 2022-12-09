@@ -8,8 +8,6 @@ use App\Services\DataReceiver;
 use App\Services\DataProcessor;
 use App\Services\DataMapper;
 use App\Services\Analyzer;
-use App\Services\BotSender;
-use DefStudio\Telegraph\Models\TelegraphChat;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,10 +33,6 @@ class AppServiceProvider extends ServiceProvider
                 $this->app->make(Client::class),
                 $this->app->get('config')
             );
-        });
-    
-        $this->app->bind(BotSender::class, function () {
-            return new BotSender(TelegraphChat::find(1));
         });
         
         $this->app->bind(DataProcessor::class, function () {

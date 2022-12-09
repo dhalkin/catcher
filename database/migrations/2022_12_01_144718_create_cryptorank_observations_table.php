@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('cryptorank_observations', function (Blueprint $table) {
             $table->id();
             $table->integer('cryptorank_id');
-            $table->dateTime('date_time');
+            $table->dateTime('sessionTime');
+            $table->dateTime('lastUpdated');
             $table->string('name', 96);
             $table->string('symbol', 96);
             $table->string('type', 96)->nullable();

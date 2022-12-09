@@ -16,6 +16,11 @@ class Symbol
     private string $name;
     
     /**
+     * @var string
+     */
+    private string $symbol;
+    
+    /**
      * @var float
      */
     private float $pricePercent;
@@ -39,9 +44,9 @@ class Symbol
     /**
      * @param string $name
      */
-    public function __construct(string $name)
+    public function __construct(string $symbol)
     {
-        $this->name = $name;
+        $this->symbol = $symbol;
     }
     
     /**
@@ -145,5 +150,21 @@ class Symbol
     public function setPrice(float $price): void
     {
         $this->price = round($price, 6);
+    }
+    
+    /**
+     * @return string
+     */
+    public function getSymbol(): string
+    {
+        return $this->symbol;
+    }
+    
+    /**
+     * @param string $symbol
+     */
+    public function setSymbol(string $symbol): void
+    {
+        $this->symbol = $symbol;
     }
 }

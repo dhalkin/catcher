@@ -46,8 +46,8 @@ class BotFilter
                 $symbol->getPricePercent() > $this->filter->getChangePrice() ||
                 $symbol->getPricePercent() < -1 * abs($this->filter->getChangePrice()) ||
                 $symbol->getVolumePercent() > $this->filter->getChangeVolume() ||
-                $symbol->getCirculationPercent() != 0
-            ) || ($symbol->getName() == 'BTC')) {
+                $symbol->getCirculationPercent() > $this->filter->getChangeCirculation()
+            ) || ($symbol->getSymbol() == 'BTC')) {
             return true;
         }
         

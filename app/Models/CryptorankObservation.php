@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property integer $id
  * @property integer $cryptorank_id
- * @property string $date_time
+ * @property string $sessionTime
+ * @property string $lastUpdated
  * @property string $name
  * @property string $symbol
  * @property string $type
@@ -36,7 +37,8 @@ class CryptorankObservation extends Model
      */
     protected $fillable = [
         'cryptorank_id',
-        'date_time',
+        'sessionTime',
+        'lastUpdated',
         'name',
         'symbol',
         'type',

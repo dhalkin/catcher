@@ -40,7 +40,7 @@ class DataReceiver
         $query = [
             'api_key' => $this->config->get('api.cryptorank_key'),
             //'sort' => '-rank',
-            'limit' => count($symbolList),
+            'limit' => count($symbolList) + 20, // found out that here is duplicate of symbols, different exchanges!
             'symbols' => $list
         ];
         

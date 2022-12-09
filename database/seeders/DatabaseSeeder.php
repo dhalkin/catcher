@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\TelegraphBot;
+use App\Models\TelegraphChat;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        
+        $tb = TelegraphBot::factory(1)->create([
+            'token' => '5951715648:AAF8QL1cs-0EKpKO8ufOR3OeyPDh2YbPi4E',
+            'name' => 'Paramount Pictures Bot',
+        ]);
+        
+        $tCh = TelegraphChat::factory(1)->create([
+            'chat_id' => 73097902,
+            'name' => 'ppBot and Dmytro',
+            'telegraph_bot_id' => $tb->first()->id
+        ]);
     }
 }

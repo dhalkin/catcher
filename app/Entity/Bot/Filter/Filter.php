@@ -6,7 +6,7 @@ abstract class Filter
 {
     protected int $changePrice;
     protected int $changeVolume;
-    protected bool $unsigned = false;
+    protected int $changeCirculation;
     
     /**
      * @return int
@@ -25,10 +25,10 @@ abstract class Filter
     }
     
     /**
-     * @return bool
+     * @return int
      */
-    public function isUnsigned(): bool
+    public function getChangeCirculation(): int
     {
-        return $this->unsigned;
+        return $this->changeCirculation;
     }
 }

@@ -22,6 +22,7 @@ class Analyzer
         $previous = $this->getPreviousObservation($currentObservation);
         if ($previous) {
             $botItem = new Symbol($currentObservation->symbol);
+            $botItem->setName($currentObservation->name);
             $botItem->setTime($this->getDiffTime($currentObservation, $previous));
             // percent price change in a timer
             $botItem->setPricePercent($this->percentagePriceChange($currentObservation, $previous));
@@ -99,8 +100,8 @@ class Analyzer
      */
     private function getDiffTime(CryptorankObservation $current, CryptorankObservation $previous): string
     {
-        $startTime = Carbon::parse($previous->date_time);
-        $finishTime = Carbon::parse($current->date_time);
+        $startTime = Carbon::parse($previous->lastUpdated);
+        $finishTime = Carbon::parse($current->lastUpdated);
         
         $options = [
             'join' => '',
