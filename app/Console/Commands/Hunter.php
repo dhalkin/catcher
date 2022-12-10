@@ -7,6 +7,7 @@ use App\Services\BotSender;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 use App\Services\DataProcessor;
+use App\Events\CryptorankDataReceived;
 
 class Hunter extends Command
 {
@@ -30,7 +31,7 @@ class Hunter extends Command
     
     
     private const ATTEMPTS = 12;
-    public const SEC_BETWEEN_ATTEMPTS = 600;
+    public const SEC_BETWEEN_ATTEMPTS = 900; //  15 min
     
     /**
      * @var DataProcessor
@@ -50,6 +51,7 @@ class Hunter extends Command
     /**
      * @param DataProcessor $dataProcessor
      * @param BotSender $botSender
+     * @param BotFilter $botFilter
      */
     public function __construct(DataProcessor $dataProcessor, BotSender $botSender, BotFilter $botFilter)
     {
@@ -81,12 +83,15 @@ class Hunter extends Command
                 $result = $this->dataProcessor->processCryptoRank();
                 $this->info('Status:' . $result['status']['code'] . " Costs:" . $result['status']['creditsCost']);
                 // send only items that accomplish filter conditions
-                $filteredSd = $this->botFilter->filterOutputData($result['sessionData']);
+                $filteredSd = $this->botFilter->filterSessionData($result['sessionData']);
                 $this->botSender->sendSessionData($filteredSd);
                 
             } catch (\Throwable $e) {
                 throw new \RuntimeException($e->getMessage());
             }
+    
+            // prepate watchlist
+            CryptorankDataReceived::dispatch();
             
             // if last cycle, skip progress bar
             if ($i == self::ATTEMPTS) {

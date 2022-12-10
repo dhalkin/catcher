@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Entity\Bot\SessionData;
 use App\Models\TelegraphChat;
 use App\Entity\Bot\Symbol;
+use Illuminate\Support\Collection;
 
 /**
  *
@@ -22,6 +23,9 @@ class BotSender
      */
     private TelegraphChat $tChat;
     
+    /**
+     *
+     */
     public function __construct()
     {
         $this->tChat = TelegraphChat::find(1);
@@ -49,7 +53,8 @@ class BotSender
                 $volumeMessage = $symbol->getVolumePercent() > 0 ? "Volume24h " . self::PRICE_UP : "Volume24h " . self::PRICE_DOWN;
                 $message[] = $volumeMessage . ": <b>" . $symbol->getVolumePercent() . "</b>%";
             
-                if ($symbol->getCirculationPercent() != 0) {
+                // show only it's the reason why sybmol is here
+                if ($symbol->getCirculationPercent() > 0) {
                     $cMessage = ($symbol->getCirculationPercent() > 0) ? self::PRICE_UP : self::PRICE_DOWN;
                     $message[] = "Circulating supply: " . $cMessage . "<b>" . $symbol->getCirculationPercent() . "</b>%";
                 }
@@ -57,6 +62,31 @@ class BotSender
             }
             
             // send chunked
+            $this->tChat->html(implode("\n", $message))->send();
+            $message = [];
+        }
+    }
+    
+    /**
+     * @param string $start
+     * @param string $stop
+     * @param Collection $data
+     * @return void
+     */
+    public function sendWatchlistData(string $start, string $stop, Collection $data): void
+    {
+        $chunked = $data->chunk(self::CHUNK_OUTPUT_MESSAGE);
+        foreach ($chunked as $chunk) {
+            
+            $message[] = "Start " . $start;
+            $message[] = "Stop " . $stop;
+            $message[] = str_repeat('-', 30) . " ";
+            
+            foreach ($chunk as $row) {
+                $message[] = "<b>" . $row['symbol'] . "</b> - " . $row['result'];
+                $message[] = str_repeat('-', 30) . " ";
+            }
+    
             $this->tChat->html(implode("\n", $message))->send();
             $message = [];
         }

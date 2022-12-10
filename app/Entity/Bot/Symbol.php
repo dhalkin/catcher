@@ -126,7 +126,7 @@ class Symbol
      */
     public function setCirculationPercent(float $circulationPercent): void
     {
-        $this->circulationPercent = $circulationPercent;
+        $this->circulationPercent = round($circulationPercent, 2);
     }
     
     /**

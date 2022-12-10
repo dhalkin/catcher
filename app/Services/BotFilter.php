@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Entity\Bot\SessionData;
 use App\Entity\Bot\Symbol;
 use App\Entity\Bot\Filter\ChangePrice5Volume10;
+use Illuminate\Support\Collection;
 
 class BotFilter
 {
@@ -26,7 +27,7 @@ class BotFilter
      * @param SessionData $sessionData
      * @return SessionData
      */
-    public function filterOutputData(SessionData $sessionData): SessionData
+    public function filterSessionData(SessionData $sessionData): SessionData
     {
         $result = $sessionData->getSymbols()->filter(function ($symbol) {
             return $this->isSymbolForSend($symbol);
@@ -35,6 +36,16 @@ class BotFilter
        return $sessionData->setSymbols($result)->setFilter($this->filter);
     }
     
+    /**
+     * @param Collection $data
+     * @return Collection
+     */
+    public function filterWatchlistData(Collection $data): Collection
+    {
+        return $data->filter(function ($symbol){
+            return $symbol['consistent'] === true;
+        });
+    }
     
     /**
      * @param Symbol $symbol
