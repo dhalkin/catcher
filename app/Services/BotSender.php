@@ -78,12 +78,14 @@ class BotSender
         $chunked = $data->chunk(self::CHUNK_OUTPUT_MESSAGE);
         foreach ($chunked as $chunk) {
             
-            $message[] = "Start " . $start;
-            $message[] = "Stop " . $stop;
+            $message[] = "<i>Watchlist</i> 👽";
+            $message[] = "<b>Start</b> " . $start;
+            $message[] = "<b>Stop</b> " . $stop;
             $message[] = str_repeat('-', 30) . " ";
             
             foreach ($chunk as $row) {
-                $message[] = "<b>" . $row['symbol'] . "</b> - " . $row['result'];
+                $message[] = "<b>" . $row['symbol'] . "</b> - " . $row['result'] . "(<b>" . $row['priceChanged'] . "</b>%)";
+                $message[] = $row['name'];
                 $message[] = str_repeat('-', 30) . " ";
             }
     

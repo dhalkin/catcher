@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\Symbol;
+use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
 use App\Entity\Bot\SessionData;
 use Illuminate\Support\Collection;
+use App\Models\CryptorankObservation;
 
 /**
  *
@@ -50,10 +52,13 @@ class DataProcessor
     {
         $processorResponse = [];
         $nomicsList = Symbol::select('symbol')->distinct()->pluck('symbol')->toArray();
-        $response = $this->dataReceiver->getCryptoRankCurrencies($nomicsList);
         $sessionData = new SessionData();
         
-        if ($response['status']->code == 200) {
+        $response = $this->dataReceiver->getCryptoRankCurrencies($nomicsList);
+        // prevent to save existed data
+        $dataExists = $this->isDataExists($response['status']->time);
+        
+        if ($response['status']->code == 200 && false === $dataExists) {
             foreach ($this->filterUnfilledData($response['data']) as $cryptoRankItem) {
                 // save all observation if exists in nomicslist
                 if (in_array($cryptoRankItem->symbol, $nomicsList)) {
@@ -73,6 +78,7 @@ class DataProcessor
                 }
             }
         }
+        
         $processorResponse['status'] = (array)$response['status'];
         $processorResponse['sessionData'] = $sessionData;
         
@@ -89,5 +95,20 @@ class DataProcessor
             return isset($data->circulatingSupply) && $data->circulatingSupply > 0
                 && isset($data->values->USD->volume24h) > 0 && $data->values->USD->volume24h > 0;
         });
+    }
+    
+    /**
+     * @param string $time
+     * @return bool
+     */
+    private function isDataExists(string $time): bool
+    {
+        $t = CryptorankObservation::query()
+            ->select('sessionTime')
+            ->where('sessionTime', Carbon::parse($time))
+            ->take(1)
+            ->get();
+        
+        return $t->count() > 0;
     }
 }

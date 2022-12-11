@@ -90,8 +90,10 @@ class Hunter extends Command
                 throw new \RuntimeException($e->getMessage());
             }
     
-            // prepate watchlist
-            CryptorankDataReceived::dispatch();
+            if($result['sessionData']->getSymbols()->count() > 0){
+                // prepate watchlist
+                CryptorankDataReceived::dispatch();
+            }
             
             // if last cycle, skip progress bar
             if ($i == self::ATTEMPTS) {

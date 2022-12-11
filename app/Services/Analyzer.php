@@ -59,7 +59,7 @@ class Analyzer
      * @param CryptorankObservation $previous
      * @return float
      */
-    private function percentagePriceChange(CryptorankObservation $current, CryptorankObservation $previous): float
+    public function percentagePriceChange(CryptorankObservation $current, CryptorankObservation $previous): float
     {
         $diff = $current->price - $previous->price;
         $onePercent = $previous->price / 100;

@@ -4,16 +4,17 @@ namespace App\Listeners;
 
 use App\Events\CryptorankDataReceived;
 use App\Models\CryptorankObservation;
+use App\Services\Analyzer;
 use App\Services\BotFilter;
 use App\Services\BotSender;
 use Illuminate\Support\Collection;
 
 class AnalyzeCryptorankWatchlist
 {
-    
     private const PRICE_UP = "\xE2\xAC\x86";
     private const PRICE_DOWN = "\xE2\xAC\x87";
     private const ROWS_COMPARE = 5;
+    private const MIN_PRICE_CHANGE_PERCENT = 5;
     
     /**
      * @var BotSender
@@ -26,14 +27,20 @@ class AnalyzeCryptorankWatchlist
     private BotFilter $botFilter;
     
     /**
+     * @var Analyzer
+     */
+    private Analyzer $analyzer;
+    
+    /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct(BotSender $botSender, BotFilter $botFilter)
+    public function __construct(BotSender $botSender, BotFilter $botFilter, Analyzer $analyzer)
     {
        $this->botSender = $botSender;
        $this->botFilter = $botFilter;
+       $this->analyzer = $analyzer;
     }
     
     /**
@@ -75,14 +82,24 @@ class AnalyzeCryptorankWatchlist
             
             // collection for analyze  sorting asc
             $symbolData = CryptorankObservation::query()
-                ->select('*')
+                ->select('cryptorank_id', 'sessionTime', 'name', 'symbol', 'price')
                 ->whereBetween('sessionTime', [$start->getSessionTime(), $stop->getSessionTime()])
                 ->where('cryptorank_id', $symbol->getCryptorankId())
-                ->orderBy('created_at')
+                ->orderBy('sessionTime')
                 ->get();
             
+            // only if price changed more then param
+            $priceChanged = $this->analyzer->percentagePriceChange($symbolData->last(), $symbolData->first());
+            if (abs($priceChanged) < self::MIN_PRICE_CHANGE_PERCENT) {
+                continue;
+            }
             
-            $resultData[$symbol->getCryptorankId()] = $this->analyze($symbolData, $symbol->getSymbol());
+            $resultData[$symbol->getCryptorankId()] = $this->analyze(
+                $symbolData,
+                $symbol->getSymbol(),
+                $priceChanged,
+                $symbolData->first()->getName()
+            );
         }
         
         $filtered = $this->botFilter->filterWatchlistData(new Collection($resultData));
@@ -92,9 +109,11 @@ class AnalyzeCryptorankWatchlist
     /**
      * @param Collection $symbolData
      * @param string $symbol
+     * @param float $priceChanged
+     * @param string $name
      * @return array
      */
-    private function analyze(Collection $symbolData, string $symbol): array
+    private function analyze(Collection $symbolData, string $symbol, float $priceChanged, string $name): array
     {
         $res = [];
         $resIndicator = [];
@@ -111,9 +130,11 @@ class AnalyzeCryptorankWatchlist
         $r = array_unique($resIndicator);
         
         return [
+            'name' => $name,
             'symbol' => $symbol,
             'consistent' => count($r) == 1,
-            'result' => implode(" ", $res)
+            'result' => implode(" ", $res),
+            'priceChanged' => $priceChanged
         ];
     }
 }
