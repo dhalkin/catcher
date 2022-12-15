@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Services\BotFilter;
+use App\Events\CryptorankDataReceived;
 use App\Services\BotSender;
+use App\Services\Filters\BotFilter;
+use App\Services\Processors\DataProcessor;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
-use App\Services\DataProcessor;
-use App\Events\CryptorankDataReceived;
 
 class Hunter extends Command
 {
@@ -24,11 +24,11 @@ class Hunter extends Command
      * @var string
      */
     protected $description = 'Go for a hunt';
+    
     /**
      * @var false
      */
     private bool $shouldKeepRunning = true;
-    
     
     private const ATTEMPTS = 12;
     public const SEC_BETWEEN_ATTEMPTS = 900; //  15 min

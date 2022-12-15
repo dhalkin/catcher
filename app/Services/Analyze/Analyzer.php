@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Analyze;
 
-use App\Models\CryptorankObservation;
-use Illuminate\Support\Carbon;
-use Carbon\CarbonInterface;
 use App\Entity\Bot\Symbol;
+use App\Models\CryptorankObservation;
+use Carbon\CarbonInterface;
+use Illuminate\Support\Carbon;
 
 /**
  *
@@ -43,7 +43,7 @@ class Analyzer
     private function getPreviousObservation(CryptorankObservation $current): ?CryptorankObservation
     {
         $historyData = CryptorankObservation::where('cryptorank_id', $current->cryptorank_id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('sessionTime', 'desc')
             ->take(1)
             ->get();
         

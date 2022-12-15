@@ -5,23 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property integer $id
  * @property integer $cryptorank_id
  * @property string $sessionTime
  * @property string $lastUpdated
  * @property string $name
  * @property string $symbol
- * @property string $type
  * @property integer $circulatingSupply
  * @property integer $totalSupply
  * @property float $price
  * @property integer $volume24h
  * @property float $percentChange24h
- * @property string $created_at
  */
 class CryptorankObservation extends Model
 {
     public const UPDATED_AT = null;
+    public const CREATED_AT = null;
     
     /**
      * The table associated with the model.
@@ -29,8 +27,6 @@ class CryptorankObservation extends Model
      * @var string
      */
     protected $table = 'cryptorank_observations';
-    
-    protected $dateFormat = 'U';
     
     /**
      * @var array
@@ -46,8 +42,7 @@ class CryptorankObservation extends Model
         'totalSupply',
         'price',
         'volume24h',
-        'percentChange24h',
-        'created_at'
+        'percentChange24h'
     ];
     
     /**
@@ -139,22 +134,6 @@ class CryptorankObservation extends Model
     }
     
     /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-    
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-    
-    /**
      * @return int
      */
     public function getCirculatingSupply(): int
@@ -232,13 +211,5 @@ class CryptorankObservation extends Model
     public function setPercentChange24h(float $percentChange24h): void
     {
         $this->percentChange24h = $percentChange24h;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getCreatedAt(): string
-    {
-        return $this->created_at;
     }
 }

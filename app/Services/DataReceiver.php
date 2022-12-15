@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\ClientFactory;
 use GuzzleHttp\Client;
 use Illuminate\Config\Repository;
 
@@ -11,21 +12,21 @@ use Illuminate\Config\Repository;
 class DataReceiver
 {
     /**
-     * @var Client
+     * @var ClientFactory
      */
-    private Client $client;
+    private ClientFactory $clientFactory;
     /**
      * @var Repository
      */
     private Repository $config;
     
     /**
-     * @param Client $client
+     * @param ClientFactory $clientFactory
      * @param Repository $config
      */
-    public function __construct(Client $client, Repository $config)
+    public function __construct(ClientFactory $clientFactory, Repository $config)
     {
-        $this->client = $client;
+        $this->clientFactory = $clientFactory;
         $this->config = $config;
     }
     
@@ -44,9 +45,32 @@ class DataReceiver
             'symbols' => $list
         ];
         
-        $t = $this->client->request('GET', 'currencies', ['query' => $query]);
+        $t = $this->clientFactory->createCryptorankClient()
+            ->request('GET', 'currencies', ['query' => $query]);
         
         return (array)json_decode($t->getBody()->getContents());
+    }
+    
+    /**
+     * @param array $symbolList
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getBinanceCurrencies(string $symbolList): array
+    {
+        
+        $query = [
+            'symbols' => $symbolList
+        ];
+        
+        $t = $this->clientFactory->createBinanceClient()
+            ->request('GET', 'ticker/price', ['query' => $query]);
+        
+       // if ($t->getStatusCode() == 200) {
+            return (array)json_decode($t->getBody()->getContents());
+       // }
+        
+      //  throw new \RuntimeException("Unable to get binance");
     }
     
     /**

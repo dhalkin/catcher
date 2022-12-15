@@ -4,9 +4,9 @@ namespace App\Listeners;
 
 use App\Events\CryptorankDataReceived;
 use App\Models\CryptorankObservation;
-use App\Services\Analyzer;
-use App\Services\BotFilter;
+use App\Services\Analyze\Analyzer;
 use App\Services\BotSender;
+use App\Services\Filters\BotFilter;
 use Illuminate\Support\Collection;
 
 class AnalyzeCryptorankWatchlist
@@ -27,7 +27,7 @@ class AnalyzeCryptorankWatchlist
     private BotFilter $botFilter;
     
     /**
-     * @var Analyzer
+     * @var \App\Services\Analyze\Analyzer
      */
     private Analyzer $analyzer;
     

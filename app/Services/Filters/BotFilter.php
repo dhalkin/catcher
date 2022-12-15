@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Filters;
 
+use App\Entity\Bot\Filter\ChangePrice5Volume10;
 use App\Entity\Bot\SessionData;
 use App\Entity\Bot\Symbol;
-use App\Entity\Bot\Filter\ChangePrice5Volume10;
 use Illuminate\Support\Collection;
 
 class BotFilter

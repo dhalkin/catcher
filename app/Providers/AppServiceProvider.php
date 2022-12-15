@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use GuzzleHttp\Client;
-use App\Services\DataReceiver;
-use App\Services\DataProcessor;
+use App\Services\Analyze\Analyzer;
+use App\Services\ClientFactory;
 use App\Services\DataMapper;
-use App\Services\Analyzer;
+use App\Services\DataReceiver;
+use App\Services\Processors\DataProcessor;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,19 +18,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(Client::class, function ($app) {
-            $config = $app->get('config');
-            
-            return new Client(
-                [
-                    'base_uri' => $config->get('api.cryptorank_url')
-                ]
-            );
-        });
-        
         $this->app->bind(DataReceiver::class, function () {
             return new DataReceiver(
-                $this->app->make(Client::class),
+                $this->app->make(ClientFactory::class),
                 $this->app->get('config')
             );
         });

@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Processors;
 
+use App\Entity\Bot\SessionData;
+use App\Models\CryptorankObservation;
 use App\Models\Symbol;
+use App\Services\Analyze\Analyzer;
+use App\Services\DataMapper;
+use App\Services\DataReceiver;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
-use App\Entity\Bot\SessionData;
 use Illuminate\Support\Collection;
-use App\Models\CryptorankObservation;
 
 /**
  *

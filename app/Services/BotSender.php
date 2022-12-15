@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Entity\Bot\BinanceSessionData;
 use App\Entity\Bot\SessionData;
 use App\Models\TelegraphChat;
 use App\Entity\Bot\Symbol;
@@ -89,6 +90,25 @@ class BotSender
                 $message[] = str_repeat('-', 30) . " ";
             }
     
+            $this->tChat->html(implode("\n", $message))->send();
+            $message = [];
+        }
+    }
+    
+    /**
+     * @param BinanceSessionData $binanceSessionData
+     * @return void
+     */
+    public function sendBinanceSessionData(BinanceSessionData $binanceSessionData): void
+    {
+        $chunked = $binanceSessionData->getSymbols()->chunk(self::CHUNK_OUTPUT_MESSAGE);
+        foreach ($chunked as $chunk) {
+    
+            $message[] = "<i>Binance session </i> 👾";
+            foreach ($chunk as $item) {
+                $arrow = ($item->getChangePrice() > 0) ? self::PRICE_UP : self::PRICE_DOWN ;
+                $message[] = "<b>" . $item->getName() . "</b>  (" . $item->getTime() . ")" . $arrow . " " . $item->getChangePrice() . "%";
+            }
             $this->tChat->html(implode("\n", $message))->send();
             $message = [];
         }

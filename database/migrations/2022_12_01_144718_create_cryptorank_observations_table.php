@@ -14,13 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('cryptorank_observations', function (Blueprint $table) {
-            $table->id();
             $table->integer('cryptorank_id');
             $table->dateTime('sessionTime');
             $table->dateTime('lastUpdated');
             $table->string('name', 96);
             $table->string('symbol', 96);
-            $table->string('type', 96)->nullable();
     
             $table->bigInteger('circulatingSupply')->nullable();
             $table->bigInteger('totalSupply')->nullable();
@@ -28,11 +26,9 @@ return new class extends Migration
             $table->float('price', 24, 12)->nullable();
             $table->bigInteger('volume24h')->nullable();
             $table->float('percentChange24h',8, 4)->nullable();
-            
-            $table->integer('created_at')->unsigned();
     
             $table->index(['symbol']);
-            $table->index(['created_at']);
+            $table->index(['sessionTime']);
         });
     }
 
