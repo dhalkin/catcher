@@ -73,10 +73,12 @@ class BinanceHunter extends Command
         $this->trap(SIGTERM, fn() => $this->shouldKeepRunning = false);
         while ($this->shouldKeepRunning) {
     
+            $this->line('Getting data...');
             $sessionData = $this->binanceProcessor->processBinance();
             // filter
             $filteredData = $this->binanceFilter->filterSessionData($sessionData);
             //send
+            $this->line('Sending...');
             $this->botSender->sendBinanceSessionData($filteredData);
     
             // wait progress bar

@@ -18,7 +18,11 @@ class BinanceSessionData
         $this->symbols = new Collection();
     }
     
-    public function addSymbol(BinanceSymbol $binanceSymbol)
+    /**
+     * @param BinanceSymbol $binanceSymbol
+     * @return void
+     */
+    public function addSymbol(BinanceSymbol $binanceSymbol): void
     {
         $this->symbols->add($binanceSymbol);
     }

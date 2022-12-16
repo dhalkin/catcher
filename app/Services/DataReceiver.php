@@ -66,11 +66,11 @@ class DataReceiver
         $t = $this->clientFactory->createBinanceClient()
             ->request('GET', 'ticker/price', ['query' => $query]);
         
-       // if ($t->getStatusCode() == 200) {
+        if ($t->getStatusCode() == 200) {
             return (array)json_decode($t->getBody()->getContents());
-       // }
+        }
         
-      //  throw new \RuntimeException("Unable to get binance");
+        throw new \RuntimeException("Unable to get binance");
     }
     
     /**

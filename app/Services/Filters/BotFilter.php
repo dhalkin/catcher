@@ -9,6 +9,10 @@ use Illuminate\Support\Collection;
 
 class BotFilter
 {
+    // ??
+    protected const CHANGE_PRICE_PERCENT = 5;
+    protected const CHANGE_VOLUME_PERCENT  = 10;
+    protected const CHANGE_CIRCULATION  = 1;
     
     /**
      * @var ChangePrice5Volume10
