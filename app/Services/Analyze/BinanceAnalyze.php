@@ -6,6 +6,7 @@ use App\Entity\Bot\BinanceSymbol;
 use App\Models\BinanceObservations;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 
 class BinanceAnalyze
@@ -17,27 +18,38 @@ class BinanceAnalyze
      */
     public function getCalculatedSymbol(BinanceObservations $binanceObservations):? BinanceSymbol
     {
+        // get previous time
+        $issetPreviousData = Redis::exists('symbol:' .  $binanceObservations->getSymbol());
+        
         //can do calculation only when history data exists
-        $previous = $this->getPreviousObservation($binanceObservations);
-        if ($previous) {
+        if ($issetPreviousData) {
+            $allPreviousData = Redis::hgetall('symbol:' .  $binanceObservations->getSymbol());
+            
             $symbol = new BinanceSymbol();
             $symbol->setName($binanceObservations->getSymbol());
-            $symbol->setChangePrice($this->percentagePriceChange($binanceObservations, $previous));
-            $symbol->setTime($this->getDiffTime($binanceObservations, $previous));
+            $symbol->setChangePrice($this->percentagePriceChange($binanceObservations->getPrice(), $allPreviousData['price']));
+            $symbol->setTime($this->getDiffTime($binanceObservations->getSessionTime(), $allPreviousData['session_time']));
         }
+    
+        //set new data
+        Redis::hmset('symbol:' .  $binanceObservations->getSymbol(),
+            [
+                'price' => $binanceObservations->getPrice(),
+                'session_time' => $binanceObservations->getSessionTime()
+            ]);
         
         return $symbol ?? null;
     }
     
     /**
-     * @param BinanceObservations $current
-     * @param BinanceObservations $previous
+     * @param string $current
+     * @param string $previous
      * @return string
      */
-    private function getDiffTime(BinanceObservations $current, BinanceObservations $previous): string
+    private function getDiffTime(string $current, string $previous): string
     {
-        $startTime = Carbon::parse($previous->getSessionTime());
-        $finishTime = Carbon::parse($current->getSessionTime());
+        $startTime = Carbon::parse($previous);
+        $finishTime = Carbon::parse($current);
         
         $options = [
             'join' => '',
@@ -49,14 +61,14 @@ class BinanceAnalyze
     }
     
     /**
-     * @param BinanceObservations $current
-     * @param BinanceObservations $previous
+     * @param string $current
+     * @param string $previous
      * @return float
      */
-    public function percentagePriceChange(BinanceObservations $current, BinanceObservations $previous): float
+    public function percentagePriceChange(string $current, string $previous): float
     {
-        $diff = $current->price - $previous->price;
-        $onePercent = $previous->price / 100;
+        $diff = (float) $current - (float) $previous;
+        $onePercent = (float) $previous / 100;
         
         return round($diff / $onePercent, 2);
     }

@@ -47,6 +47,7 @@ class BinanceProcessor
      */
     public function processBinance(): BinanceSessionData
     {
+        $time = Carbon::now();
         $nomicsList = Symbol::select('symbol')->distinct()->pluck('symbol')->toArray();
         
         $symbols = '[';
@@ -58,7 +59,6 @@ class BinanceProcessor
         $symbols .= ']';
         
         $response = $this->dataReceiver->getBinanceCurrencies($symbols);
-        $time = Carbon::now();
         $bSessionData = new BinanceSessionData();
         $bSessionData->setTime($time);
         
@@ -71,7 +71,7 @@ class BinanceProcessor
                 $bSessionData->addSymbol($symbol);
             }
             
-            $observation->save();
+            //$observation->save();
         }
         
         return $bSessionData;

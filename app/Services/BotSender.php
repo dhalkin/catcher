@@ -97,14 +97,15 @@ class BotSender
     
     /**
      * @param BinanceSessionData $binanceSessionData
+     * @param int $percent
      * @return void
      */
-    public function sendBinanceSessionData(BinanceSessionData $binanceSessionData): void
+    public function sendBinanceSessionData(BinanceSessionData $binanceSessionData, int $percent): void
     {
         $chunked = $binanceSessionData->getSymbols()->chunk(self::CHUNK_OUTPUT_MESSAGE);
         foreach ($chunked as $chunk) {
     
-            $message[] = "<i>Binance session </i> 👾";
+            $message[] = "<i>Binance session </i> (" . $percent ."%) 👾";
             foreach ($chunk as $item) {
                 $arrow = ($item->getChangePrice() > 0) ? self::PRICE_UP : self::PRICE_DOWN ;
                 $message[] = "<b>" . $item->getName() . "</b>  (" . $item->getTime() . ")" . $arrow . " " . $item->getChangePrice() . "%";

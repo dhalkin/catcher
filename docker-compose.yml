@@ -56,6 +56,19 @@ services:
     networks:
       - catcher-network
 
+  #Redis Service
+  redis:
+    image: 'bitnami/redis:7.0'
+    container_name: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "127.0.0.1:6377:6379/tcp"
+    volumes:
+      - redis:/bitnami
+    networks:
+      - catcher-network
+
 #Docker Networks
 networks:
   catcher-network:
@@ -63,4 +76,6 @@ networks:
 #Volumes
 volumes:
   dbdata:
+    driver: local
+  redis:
     driver: local

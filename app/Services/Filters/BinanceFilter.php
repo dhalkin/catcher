@@ -8,18 +8,17 @@ use App\Entity\Bot\BinanceSymbol;
 class BinanceFilter
 {
     
-    private const ALARM_CHANGE_PRICE_PERCENT = 2;
-    
     /**
      * @param BinanceSessionData $binanceSessionData
+     * @param int $alarmChangePercent
      * @return BinanceSessionData
      */
-    public function filterSessionData(BinanceSessionData $binanceSessionData): BinanceSessionData
+    public function filterSessionData(BinanceSessionData $binanceSessionData, int $alarmChangePercent): BinanceSessionData
     {
-        $result = $binanceSessionData->getSymbols()->filter(function ($symbol) {
+        $result = $binanceSessionData->getSymbols()->filter(function ($symbol) use ($alarmChangePercent) {
             /** @var BinanceSymbol $symbol */
-            return $symbol->getChangePrice() > self::ALARM_CHANGE_PRICE_PERCENT ||
-                $symbol->getChangePrice() < -1 * abs(self::ALARM_CHANGE_PRICE_PERCENT) ||
+            return $symbol->getChangePrice() > $alarmChangePercent ||
+                $symbol->getChangePrice() < -1 * abs($alarmChangePercent) ||
                 $symbol->getName() == 'BTCUSDT';
         });
         
