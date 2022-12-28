@@ -18,8 +18,7 @@ class BinanceFilter
         $result = $binanceSessionData->getSymbols()->filter(function ($symbol) use ($alarmChangePercent) {
             /** @var BinanceSymbol $symbol */
             return $symbol->getChangePrice() > $alarmChangePercent ||
-                $symbol->getChangePrice() < -1 * abs($alarmChangePercent) ||
-                $symbol->getName() == 'BTCUSDT';
+                $symbol->getChangePrice() < -1 * abs($alarmChangePercent);
         });
         
         return $binanceSessionData->setSymbols($result);

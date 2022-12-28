@@ -29,6 +29,7 @@ class BinanceAnalyze
             $symbol->setName($binanceObservations->getSymbol());
             $symbol->setChangePrice($this->percentagePriceChange($binanceObservations->getPrice(), $allPreviousData['price']));
             $symbol->setTime($this->getDiffTime($binanceObservations->getSessionTime(), $allPreviousData['session_time']));
+            $symbol->setCurrentPriceUSDT($binanceObservations->getPrice());
         }
     
         //set new data

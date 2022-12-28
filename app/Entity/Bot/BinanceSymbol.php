@@ -15,6 +15,11 @@ class BinanceSymbol
     private float $changePrice;
     
     /**
+     * @var float
+     */
+    private float $currentPriceUSDT;
+    
+    /**
      * @var string
      */
     private string $time;
@@ -65,5 +70,21 @@ class BinanceSymbol
     public function setTime(string $time): void
     {
         $this->time = $time;
+    }
+    
+    /**
+     * @return float
+     */
+    public function getCurrentPriceUSDT(): float
+    {
+        return $this->currentPriceUSDT;
+    }
+    
+    /**
+     * @param float $currentPriceUSDT
+     */
+    public function setCurrentPriceUSDT(float $currentPriceUSDT): void
+    {
+        $this->currentPriceUSDT = $currentPriceUSDT;
     }
 }

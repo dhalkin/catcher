@@ -7,16 +7,19 @@ use App\Services\BotSender;
 use App\Services\Filters\BotFilter;
 use App\Services\Processors\DataProcessor;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Console\Command;
+use Symfony\Component\Console\Command\Command as CommandAlias;
 
-class Hunter extends Command
+class Hunter extends BaseCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'hunter:go';
+    protected $signature = 'hunter:go
+                            {--time=600 : Go session every time}
+                            {--percent=5 : Change price both way minimum that value will send bot message}
+                            {--volume=10 : Rise up volume above that value will send bot message}';
     
     /**
      * The console command description.
@@ -29,9 +32,6 @@ class Hunter extends Command
      * @var false
      */
     private bool $shouldKeepRunning = true;
-    
-    private const ATTEMPTS = 12;
-    public const SEC_BETWEEN_ATTEMPTS = 900; //  15 min
     
     /**
      * @var DataProcessor
@@ -69,60 +69,37 @@ class Hunter extends Command
      */
     public function handle()
     {
-
-//        $this->trap(SIGTERM, fn() => $this->shouldKeepRunning = false);
-//        while ($this->shouldKeepRunning) {
-//
-//        }
+        $time = $this->option('time');
+        $percent = $this->option('percent');
+        $volume = $this->option('volume');
         
-        // will do  max cycles
-        for ($i = 1; $i <= self::ATTEMPTS; $i++) {
+        $this->line('Starting with options Time:' . $time . 's,  Percent:' . $percent . '%');
+        
+        $this->trap(SIGTERM, fn() => $this->shouldKeepRunning = false);
+        while ($this->shouldKeepRunning) {
             
             $this->line('Getting data');
             try {
                 $result = $this->dataProcessor->processCryptoRank();
                 $this->info('Status:' . $result['status']['code'] . " Costs:" . $result['status']['creditsCost']);
+                
                 // send only items that accomplish filter conditions
-                $filteredSd = $this->botFilter->filterSessionData($result['sessionData']);
+                $filteredSd = $this->botFilter->filterSessionData($result['sessionData'], $percent, $volume);
                 $this->botSender->sendSessionData($filteredSd);
                 
             } catch (\Throwable $e) {
                 throw new \RuntimeException($e->getMessage());
             }
-    
-            if($result['sessionData']->getSymbols()->count() > 0){
+            
+            if ($result['sessionData']->getSymbols()->count() > 0) {
                 // prepate watchlist
                 CryptorankDataReceived::dispatch();
             }
             
-            // if last cycle, skip progress bar
-            if ($i == self::ATTEMPTS) {
-                continue;
-            }
-            
             // wait progress bar
-            $this->progressBar();
+            $this->progressBar($time);
         }
         
-        $this->line('Stop working by end attempts');
-        
-        return Command::SUCCESS;
-    }
-    
-    /**
-     * @return void
-     */
-    private function progressBar(): void
-    {
-        $this->line('Waiting:' . self::SEC_BETWEEN_ATTEMPTS . 'sec');
-        $pb = range(1, self::SEC_BETWEEN_ATTEMPTS);
-        $bar = $this->output->createProgressBar(count($pb));
-        $bar->start();
-        foreach ($pb as $number) {
-            $bar->advance();
-            sleep(1);
-        }
-        $bar->finish();
-        $this->newLine(1);
+        return CommandAlias::SUCCESS;
     }
 }

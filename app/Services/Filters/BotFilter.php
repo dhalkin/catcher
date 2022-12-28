@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 class BotFilter
 {
     // ??
-    protected const CHANGE_PRICE_PERCENT = 5;
     protected const CHANGE_VOLUME_PERCENT  = 10;
     protected const CHANGE_CIRCULATION  = 1;
     
@@ -31,10 +30,10 @@ class BotFilter
      * @param SessionData $sessionData
      * @return SessionData
      */
-    public function filterSessionData(SessionData $sessionData): SessionData
+    public function filterSessionData(SessionData $sessionData, int $percent, int $volume): SessionData
     {
-        $result = $sessionData->getSymbols()->filter(function ($symbol) {
-            return $this->isSymbolForSend($symbol);
+        $result = $sessionData->getSymbols()->filter(function ($symbol) use ($percent, $volume) {
+            return $this->isSymbolForSend($symbol, $percent, $volume);
         });
         
        return $sessionData->setSymbols($result)->setFilter($this->filter);
@@ -55,12 +54,12 @@ class BotFilter
      * @param Symbol $symbol
      * @return bool
      */
-    private function isSymbolForSend(Symbol $symbol): bool
+    private function isSymbolForSend(Symbol $symbol, int $percent, int $volume): bool
     {
         if ((
-                $symbol->getPricePercent() > $this->filter->getChangePrice() ||
-                $symbol->getPricePercent() < -1 * abs($this->filter->getChangePrice()) ||
-                $symbol->getVolumePercent() > $this->filter->getChangeVolume() ||
+                $symbol->getPricePercent() > $percent ||
+                $symbol->getPricePercent() < -1 * abs($percent) ||
+                $symbol->getVolumePercent() > $volume ||
                 $symbol->getCirculationPercent() > $this->filter->getChangeCirculation()
             ) || ($symbol->getSymbol() == 'BTC')) {
             return true;

@@ -74,6 +74,27 @@ class DataReceiver
     }
     
     /**
+     * @param string $symbol
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getBinanceSymbolTicker(string $symbol): array
+    {
+        $query = [
+            'symbol' => $symbol
+        ];
+    
+        $t = $this->clientFactory->createBinanceClient()
+            ->request('GET', 'ticker/price', ['query' => $query]);
+    
+        if ($t->getStatusCode() == 200) {
+            return (array)json_decode($t->getBody()->getContents());
+        }
+    
+        throw new \RuntimeException("Unable to get binance");
+    }
+    
+    /**
      * @return array
      */
     public function mockCryptoRankCurrencies(): array
