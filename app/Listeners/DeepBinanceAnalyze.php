@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 class DeepBinanceAnalyze
 {
     private const PERIOD_SEC = 10;
+    private const PERIOD_TIME = 6;
     
     /**
      * @var DataReceiver
@@ -55,38 +56,37 @@ class DeepBinanceAnalyze
         
         // monitoring
         $loosingTime = 0;
+        $middlePeriodPrice = 0;
+        $startPeriodPrice = $startPrice;
         while ($this->shouldKeepPosition) {
             
-            for ($i = 1; $i <= 5; $i++) {
+            for ($i = 1; $i <= self::PERIOD_TIME; $i++) {
                 // get current symbol price
                 $t = $this->dataReceiver->getBinanceSymbolTicker($symbol->getName());
                 $dataPrices[] = $t['price'];
                 sleep(self::PERIOD_SEC);
             }
             
-            $middlePrice = array_sum($dataPrices) / 5;
+            $middlePeriodPrice = array_sum($dataPrices) / self::PERIOD_TIME;
             
             // compare with start price
-            $diffPrice = $startPrice - $middlePrice;
+            $diffPrice = $startPeriodPrice - $middlePeriodPrice;
             if ($diffPrice < 0) {
                 // price growing up
-                if ($loosingTime > 0){
+                if ($loosingTime > 0) {
                     $loosingTime--;
                 }
                 
-                $dataPrices = [];
-                
-                $this->logging("Continue", $middlePrice);
-                continue;
+                $this->logging("Continue", $middlePeriodPrice);
                 
             } else {
+                // price going down
                 $loosingTime++;
-               
-                $this->logging("LoosingTime:". $loosingTime, $middlePrice);
+                $this->logging("LoosingTime:" . $loosingTime, $middlePeriodPrice);
             }
-            
-            
-            if ($loosingTime == 3){
+    
+            $startPeriodPrice = $middlePeriodPrice;
+            if ($loosingTime == 3 && $middlePeriodPrice < $startPrice) {
                 // stop
                 $this->shouldKeepPosition = false;
             }
@@ -95,16 +95,16 @@ class DeepBinanceAnalyze
         }
         
         // sell
-        $this->logging("Selling, start:".$startPrice, $middlePrice);
+        $this->logging("Selling, start:" . $startPrice, $middlePeriodPrice);
     }
     
-    public function getMiddlePrice()
-    {
-    
-    }
-    
+    /**
+     * @param string $message
+     * @param float $price
+     * @return void
+     */
     private function logging(string $message, float $price)
     {
-        Log::channel('deepAnalyze')->info($this->pair . " : " . $message . " : "  . $price);
+        Log::channel('deepAnalyze')->info($this->pair . " : " . $message . " : " . $price);
     }
 }

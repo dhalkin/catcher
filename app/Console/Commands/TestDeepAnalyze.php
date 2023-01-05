@@ -31,8 +31,8 @@ class TestDeepAnalyze extends Command
     public function handle()
     {
         $t = new BinanceSymbol();
-        $t->setCurrentPriceUSDT(16666.546);
-        $t->setName("BTCUSDT");
+        $t->setCurrentPriceUSDT(0.693);
+        $t->setName("NEXOUSDT");
         $t->setChangePrice(1);
         $t->setTime(Carbon::now());
     
