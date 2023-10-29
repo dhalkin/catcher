@@ -23,8 +23,5 @@ class BybitProcessor
         $time = Carbon::now();
     
         $response = $this->dataReceiver->getByBitSpotCurrencies();
-        
-        
     }
-    
 }

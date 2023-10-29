@@ -51,8 +51,8 @@ class BinanceHunter extends BaseCommand
     
     /**
      * @param BinanceProcessor $binanceProcessor
-     * @param BinanceFilter $binanceFilter
-     * @param BotSender $botSender
+     * @param BinanceFilter    $binanceFilter
+     * @param BotSender        $botSender
      */
     public function __construct(BinanceProcessor $binanceProcessor, BinanceFilter $binanceFilter, BotSender $botSender)
     {
@@ -76,16 +76,15 @@ class BinanceHunter extends BaseCommand
         
         $this->trap(SIGTERM, fn() => $this->shouldKeepRunning = false);
         while ($this->shouldKeepRunning) {
-            
             $this->line('Getting data...');
             $sessionData = $this->binanceProcessor->processBinance();
             // filter
             $filteredData = $this->binanceFilter->filterSessionData($sessionData, $percent);
             
             // send filtered items to deep analyze
-//            if ($filteredData->getSymbols()->count() > 0) {
-//                GotBinanceFiltered::dispatch($filteredData->getSymbols()->first());
-//            }
+            //            if ($filteredData->getSymbols()->count() > 0) {
+            //                GotBinanceFiltered::dispatch($filteredData->getSymbols()->first());
+            //            }
             
             //$this->call('test:deep');
             

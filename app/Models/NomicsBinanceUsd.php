@@ -16,7 +16,7 @@ class NomicsBinanceUsd extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'nomics-binance-usd';
@@ -25,5 +25,4 @@ class NomicsBinanceUsd extends Model
      * @var array
      */
     protected $fillable = ['exchange', 'type', 'base', 'quote', 'base_symbol', 'quote_symbol'];
-    
 }

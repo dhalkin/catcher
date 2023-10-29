@@ -21,7 +21,7 @@ class BaseCommand extends Command
     protected $description = 'Only as base class for extended command';
     
     /**
-     * @param int $time
+     * @param  int $time
      * @return void
      */
     protected function progressBar(int $time): void

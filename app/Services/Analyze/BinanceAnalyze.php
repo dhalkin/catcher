@@ -8,12 +8,10 @@ use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Redis;
 
-
 class BinanceAnalyze
 {
-    
     /**
-     * @param BinanceObservations $binanceObservations
+     * @param  BinanceObservations $binanceObservations
      * @return BinanceSymbol|null
      */
     public function getCalculatedSymbol(BinanceObservations $binanceObservations):? BinanceSymbol
@@ -27,24 +25,36 @@ class BinanceAnalyze
             
             $symbol = new BinanceSymbol();
             $symbol->setName($binanceObservations->getSymbol());
-            $symbol->setChangePrice($this->percentagePriceChange($binanceObservations->getPrice(), $allPreviousData['price']));
-            $symbol->setTime($this->getDiffTime($binanceObservations->getSessionTime(), $allPreviousData['session_time']));
+            $symbol->setChangePrice(
+                $this->percentagePriceChange(
+                    $binanceObservations->getPrice(),
+                    $allPreviousData['price']
+                )
+            );
+            $symbol->setTime(
+                $this->getDiffTime(
+                    $binanceObservations->getSessionTime(),
+                    $allPreviousData['session_time']
+                )
+            );
             $symbol->setCurrentPriceUSDT($binanceObservations->getPrice());
         }
     
         //set new data
-        Redis::hmset('symbol:' .  $binanceObservations->getSymbol(),
+        Redis::hmset(
+            'symbol:' .  $binanceObservations->getSymbol(),
             [
                 'price' => $binanceObservations->getPrice(),
                 'session_time' => $binanceObservations->getSessionTime()
-            ]);
+            ]
+        );
         
         return $symbol ?? null;
     }
     
     /**
-     * @param string $current
-     * @param string $previous
+     * @param  string $current
+     * @param  string $previous
      * @return string
      */
     private function getDiffTime(string $current, string $previous): string
@@ -62,8 +72,8 @@ class BinanceAnalyze
     }
     
     /**
-     * @param string $current
-     * @param string $previous
+     * @param  string $current
+     * @param  string $previous
      * @return float
      */
     public function percentagePriceChange(string $current, string $previous): float
@@ -75,7 +85,7 @@ class BinanceAnalyze
     }
     
     /**
-     * @param BinanceObservations $current
+     * @param  BinanceObservations $current
      * @return BinanceObservations|null
      */
     private function getPreviousObservation(BinanceObservations $current): ?BinanceObservations

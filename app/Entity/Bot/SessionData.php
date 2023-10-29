@@ -28,7 +28,7 @@ class SessionData
     }
     
     /**
-     * @param Symbol $symbol
+     * @param  Symbol $symbol
      * @return void
      */
     public function addSymbol(Symbol $symbol): void
@@ -61,7 +61,7 @@ class SessionData
     }
     
     /**
-     * @param Collection $symbols
+     * @param  Collection $symbols
      * @return SessionData
      */
     public function setSymbols(Collection $symbols): self
@@ -72,7 +72,7 @@ class SessionData
     }
     
     /**
-     * @param Filter $filter
+     * @param  Filter $filter
      * @return SessionData
      */
     public function setFilter(Filter $filter): self

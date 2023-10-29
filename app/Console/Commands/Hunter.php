@@ -50,8 +50,8 @@ class Hunter extends BaseCommand
     
     /**
      * @param DataProcessor $dataProcessor
-     * @param BotSender $botSender
-     * @param BotFilter $botFilter
+     * @param BotSender     $botSender
+     * @param BotFilter     $botFilter
      */
     public function __construct(DataProcessor $dataProcessor, BotSender $botSender, BotFilter $botFilter)
     {
@@ -77,7 +77,6 @@ class Hunter extends BaseCommand
         
         $this->trap(SIGTERM, fn() => $this->shouldKeepRunning = false);
         while ($this->shouldKeepRunning) {
-            
             $this->line('Getting data');
             try {
                 $result = $this->dataProcessor->processCryptoRank();
@@ -86,7 +85,6 @@ class Hunter extends BaseCommand
                 // send only items that accomplish filter conditions
                 $filteredSd = $this->botFilter->filterSessionData($result['sessionData'], $percent, $volume);
                 $this->botSender->sendSessionData($filteredSd);
-                
             } catch (\Throwable $e) {
                 throw new \RuntimeException($e->getMessage());
             }

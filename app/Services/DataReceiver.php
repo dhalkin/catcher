@@ -22,7 +22,7 @@ class DataReceiver
     
     /**
      * @param ClientFactory $clientFactory
-     * @param Repository $config
+     * @param Repository    $config
      */
     public function __construct(ClientFactory $clientFactory, Repository $config)
     {
@@ -31,7 +31,7 @@ class DataReceiver
     }
     
     /**
-     * @param array $symbolList
+     * @param  array $symbolList
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -52,7 +52,7 @@ class DataReceiver
     }
     
     /**
-     * @param array $symbolList
+     * @param  array $symbolList
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -74,7 +74,7 @@ class DataReceiver
     }
     
     /**
-     * @param string $symbol
+     * @param  string $symbol
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */

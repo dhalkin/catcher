@@ -6,7 +6,7 @@ use App\Entity\Bot\BinanceSessionData;
 use App\Models\Symbol;
 use App\Services\DataMapper;
 use App\Services\DataReceiver;
-use  App\Services\Analyze\BinanceAnalyze;
+use App\Services\Analyze\BinanceAnalyze;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -31,8 +31,8 @@ class BinanceProcessor
     private DataMapper $dataMapper;
     
     /**
-     * @param DataReceiver $dataReceiver
-     * @param DataMapper $dataMapper
+     * @param DataReceiver   $dataReceiver
+     * @param DataMapper     $dataMapper
      * @param BinanceAnalyze $binanceAnalyze
      */
     public function __construct(DataReceiver $dataReceiver, DataMapper $dataMapper, BinanceAnalyze $binanceAnalyze)
@@ -53,7 +53,6 @@ class BinanceProcessor
         $symbols = '[';
         foreach ($nomicsList as $s) {
             $symbols .= '"' . $s . 'USDT",';
-            
         }
         $symbols = rtrim($symbols, ",");
         $symbols .= ']';

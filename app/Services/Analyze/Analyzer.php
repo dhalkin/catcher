@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
 class Analyzer
 {
     /**
-     * @param CryptorankObservation $currentObservation
+     * @param  CryptorankObservation $currentObservation
      * @return null|Symbol
      */
     public function getCalculatedSymbol(CryptorankObservation $currentObservation): ?Symbol
@@ -37,7 +37,7 @@ class Analyzer
     }
     
     /**
-     * @param CryptorankObservation $current
+     * @param  CryptorankObservation $current
      * @return CryptorankObservation|null
      */
     private function getPreviousObservation(CryptorankObservation $current): ?CryptorankObservation
@@ -55,8 +55,8 @@ class Analyzer
     }
     
     /**
-     * @param CryptorankObservation $current
-     * @param CryptorankObservation $previous
+     * @param  CryptorankObservation $current
+     * @param  CryptorankObservation $previous
      * @return float
      */
     public function percentagePriceChange(CryptorankObservation $current, CryptorankObservation $previous): float
@@ -68,8 +68,8 @@ class Analyzer
     }
     
     /**
-     * @param CryptorankObservation $current
-     * @param CryptorankObservation $previous
+     * @param  CryptorankObservation $current
+     * @param  CryptorankObservation $previous
      * @return float
      */
     private function percentageVolumeChange(CryptorankObservation $current, CryptorankObservation $previous): float
@@ -81,8 +81,8 @@ class Analyzer
     }
     
     /**
-     * @param CryptorankObservation $current
-     * @param CryptorankObservation $previous
+     * @param  CryptorankObservation $current
+     * @param  CryptorankObservation $previous
      * @return float
      */
     private function getCirculatingSupplyChange(CryptorankObservation $current, CryptorankObservation $previous): float
@@ -94,8 +94,8 @@ class Analyzer
     }
     
     /**
-     * @param CryptorankObservation $current
-     * @param CryptorankObservation $previous
+     * @param  CryptorankObservation $current
+     * @param  CryptorankObservation $previous
      * @return string
      */
     private function getDiffTime(CryptorankObservation $current, CryptorankObservation $previous): string
@@ -112,4 +112,3 @@ class Analyzer
         return $finishTime->diffForHumans($startTime, $options, true);
     }
 }
-

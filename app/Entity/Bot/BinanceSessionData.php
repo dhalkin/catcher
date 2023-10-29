@@ -19,7 +19,7 @@ class BinanceSessionData
     }
     
     /**
-     * @param BinanceSymbol $binanceSymbol
+     * @param  BinanceSymbol $binanceSymbol
      * @return void
      */
     public function addSymbol(BinanceSymbol $binanceSymbol): void

@@ -38,15 +38,15 @@ class AnalyzeCryptorankWatchlist
      */
     public function __construct(BotSender $botSender, BotFilter $botFilter, Analyzer $analyzer)
     {
-       $this->botSender = $botSender;
-       $this->botFilter = $botFilter;
-       $this->analyzer = $analyzer;
+        $this->botSender = $botSender;
+        $this->botFilter = $botFilter;
+        $this->analyzer = $analyzer;
     }
     
     /**
      * Handle the event.
      *
-     * @param \App\Events\CryptorankDataReceived $event
+     * @param  \App\Events\CryptorankDataReceived $event
      * @return void
      */
     public function handle(CryptorankDataReceived $event)
@@ -63,8 +63,12 @@ class AnalyzeCryptorankWatchlist
             return;
         }
         
-        /** @var CryptorankObservation $stop */
-        /** @var CryptorankObservation $start */
+        /**
+ * @var CryptorankObservation $stop
+*/
+        /**
+ * @var CryptorankObservation $start
+*/
         $stop = $listAttempts->first();
         $start = $listAttempts->last();
         
@@ -77,9 +81,10 @@ class AnalyzeCryptorankWatchlist
         
         
         $resultData = [];
-        /** @var CryptorankObservation $symbol */
+        /**
+ * @var CryptorankObservation $symbol
+*/
         foreach ($listSymbols as $symbol) {
-            
             // collection for analyze  sorting asc
             $symbolData = CryptorankObservation::query()
                 ->select('cryptorank_id', 'sessionTime', 'name', 'symbol', 'price')
@@ -107,10 +112,10 @@ class AnalyzeCryptorankWatchlist
     }
     
     /**
-     * @param Collection $symbolData
-     * @param string $symbol
-     * @param float $priceChanged
-     * @param string $name
+     * @param  Collection $symbolData
+     * @param  string     $symbol
+     * @param  float      $priceChanged
+     * @param  string     $name
      * @return array
      */
     private function analyze(Collection $symbolData, string $symbol, float $priceChanged, string $name): array
@@ -118,7 +123,9 @@ class AnalyzeCryptorankWatchlist
         $res = [];
         $resIndicator = [];
         
-        /** @var CryptorankObservation $sd */
+        /**
+ * @var CryptorankObservation $sd
+*/
         foreach ($symbolData as $index => $sd) {
             // start on second row
             if ($index > 0) {

@@ -18,21 +18,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(DataReceiver::class, function () {
-            return new DataReceiver(
-                $this->app->make(ClientFactory::class),
-                $this->app->get('config')
-            );
-        });
+        $this->app->bind(
+            DataReceiver::class,
+            function () {
+                return new DataReceiver(
+                    $this->app->make(ClientFactory::class),
+                    $this->app->get('config')
+                );
+            }
+        );
         
-        $this->app->bind(DataProcessor::class, function () {
-            return new DataProcessor(
-                $this->app->make(DataMapper::class),
-                $this->app->make(DataReceiver::class),
-                $this->app->make(Analyzer::class)
-            );
-        });
-        
+        $this->app->bind(
+            DataProcessor::class,
+            function () {
+                return new DataProcessor(
+                    $this->app->make(DataMapper::class),
+                    $this->app->make(DataReceiver::class),
+                    $this->app->make(Analyzer::class)
+                );
+            }
+        );
     }
     
     /**

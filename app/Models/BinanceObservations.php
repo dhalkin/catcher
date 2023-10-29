@@ -66,5 +66,4 @@ class BinanceObservations extends Model
     {
         $this->session_time = $session_time;
     }
-    
 }

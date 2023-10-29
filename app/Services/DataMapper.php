@@ -12,12 +12,14 @@ use Carbon\Carbon;
 class DataMapper
 {
     /**
-     * @param \stdClass $itemCryptorank
-     * @param string $sessionTime
+     * @param  \stdClass $itemCryptorank
+     * @param  string    $sessionTime
      * @return CryptorankObservation
      */
-    public function mapCryptorankItemToObservation(\stdClass $itemCryptorank, string $sessionTime): CryptorankObservation
-    {
+    public function mapCryptorankItemToObservation(
+        \stdClass $itemCryptorank,
+        string $sessionTime
+    ): CryptorankObservation {
         $result = new CryptorankObservation();
         $result->cryptorank_id = $itemCryptorank->id;
         $result->sessionTime = Carbon::parse($sessionTime);
@@ -35,8 +37,8 @@ class DataMapper
     }
     
     /**
-     * @param \stdClass $itemBinance
-     * @param string $time
+     * @param  \stdClass $itemBinance
+     * @param  string    $time
      * @return BinanceObservations
      */
     public function mapBinanceItemToObservation(\stdClass $itemBinance, string $time): BinanceObservations

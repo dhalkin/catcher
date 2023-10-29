@@ -33,9 +33,9 @@ class DataProcessor
     private Analyzer $analyzer;
     
     /**
-     * @param DataMapper $dataMapper
+     * @param DataMapper   $dataMapper
      * @param DataReceiver $dataReceiver
-     * @param Analyzer $analyzer
+     * @param Analyzer     $analyzer
      */
     public function __construct(
         DataMapper   $dataMapper,
@@ -89,19 +89,21 @@ class DataProcessor
     }
     
     /**
-     * @param array $allData
+     * @param  array $allData
      * @return Collection
      */
     private function filterUnfilledData(array $allData): Collection
     {
-        return (new Collection($allData))->filter(function ($data) {
-            return isset($data->circulatingSupply) && $data->circulatingSupply > 0
+        return (new Collection($allData))->filter(
+            function ($data) {
+                return isset($data->circulatingSupply) && $data->circulatingSupply > 0
                 && isset($data->values->USD->volume24h) > 0 && $data->values->USD->volume24h > 0;
-        });
+            }
+        );
     }
     
     /**
-     * @param string $time
+     * @param  string $time
      * @return bool
      */
     private function isDataExists(string $time): bool

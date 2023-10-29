@@ -40,7 +40,7 @@ class DeepBinanceAnalyze
      * Handle the event.
      * Base event of deep analyze selected symbol
      *
-     * @param \App\Events\GotBinanceFiltered $event
+     * @param  \App\Events\GotBinanceFiltered $event
      * @return void
      * @throws GuzzleException
      */
@@ -59,7 +59,6 @@ class DeepBinanceAnalyze
         $middlePeriodPrice = 0;
         $startPeriodPrice = $startPrice;
         while ($this->shouldKeepPosition) {
-            
             for ($i = 1; $i <= self::PERIOD_TIME; $i++) {
                 // get current symbol price
                 $t = $this->dataReceiver->getBinanceSymbolTicker($symbol->getName());
@@ -78,7 +77,6 @@ class DeepBinanceAnalyze
                 }
                 
                 $this->logging("Continue", $middlePeriodPrice);
-                
             } else {
                 // price going down
                 $loosingTime++;
@@ -99,8 +97,8 @@ class DeepBinanceAnalyze
     }
     
     /**
-     * @param string $message
-     * @param float $price
+     * @param  string $message
+     * @param  float  $price
      * @return void
      */
     private function logging(string $message, float $price)

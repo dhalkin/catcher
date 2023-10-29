@@ -34,7 +34,6 @@ class CompareBiBybit extends BaseCommand
     private BotSender $botSender;
     
     
-    
     public function __construct(BinanceProcessor $binanceProcessor, BotSender $botSender)
     {
         parent::__construct();
@@ -48,13 +47,10 @@ class CompareBiBybit extends BaseCommand
      * @return int
      * @throws GuzzleException
      */
-    public function handle()
+    public function handle(): void
     {
         $this->line('Starting compare');
     
         $sessionBinData = $this->binanceProcessor->processBinance();
-        
-        
     }
-    
 }

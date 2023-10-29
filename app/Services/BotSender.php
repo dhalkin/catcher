@@ -34,8 +34,9 @@ class BotSender
     }
     
     /**
-     * @param SessionData $sessionData
+     * @param  SessionData $sessionData
      * @return void
+     * @codingStandardsIgnoreStart
      */
     public function sendSessionData(SessionData $sessionData): void
     {
@@ -44,7 +45,9 @@ class BotSender
         
         $chunked = $sessionData->getSymbols()->chunk(self::CHUNK_OUTPUT_MESSAGE);
         foreach ($chunked as $chunk) {
-            /** @var Symbol $symbol */
+            /**
+             * @var Symbol $symbol
+            */
             foreach ($chunk as $symbol) {
                 $message[] = "<b>" . $symbol->getSymbol() . "</b> (" . $symbol->getTime() . ")  <code>" . $symbol->getPrice() . "</code>";
                 $message[] = $symbol->getName();
@@ -70,16 +73,15 @@ class BotSender
     }
     
     /**
-     * @param string $start
-     * @param string $stop
-     * @param Collection $data
+     * @param  string     $start
+     * @param  string     $stop
+     * @param  Collection $data
      * @return void
      */
     public function sendWatchlistData(string $start, string $stop, Collection $data): void
     {
         $chunked = $data->chunk(self::CHUNK_OUTPUT_MESSAGE);
         foreach ($chunked as $chunk) {
-            
             $message[] = "<i>Watchlist</i> 👽";
             $message[] = "<b>Start</b> " . $start;
             $message[] = "<b>Stop</b> " . $stop;
@@ -97,24 +99,25 @@ class BotSender
     }
     
     /**
-     * @param BinanceSessionData $binanceSessionData
-     * @param int $percent
+     * @param  BinanceSessionData $binanceSessionData
+     * @param  int                $percent
      * @return void
      */
     public function sendBinanceSessionData(BinanceSessionData $binanceSessionData, int $percent): void
     {
         /* @var BinanceSymbol $a */
         /* @var BinanceSymbol $b */
-        $sorted = $binanceSessionData->getSymbols()->sort(function ($a, $b) {
-            if ($a->getChangePrice() == $b->getChangePrice()) {
-                return 0;
+        $sorted = $binanceSessionData->getSymbols()->sort(
+            function ($a, $b) {
+                if ($a->getChangePrice() == $b->getChangePrice()) {
+                    return 0;
+                }
+                return ($a->getChangePrice() > $b->getChangePrice()) ? -1 : 1;
             }
-            return ($a->getChangePrice() > $b->getChangePrice()) ? -1 : 1;
-        });
+        );
         
         $chunked = $sorted->chunk(self::CHUNK_OUTPUT_MESSAGE);
         foreach ($chunked as $chunk) {
-    
             $message[] = "<i>Binance session </i> (" . $percent ."%) 👾";
             
             /* @var BinanceSymbol $item */

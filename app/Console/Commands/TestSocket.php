@@ -40,18 +40,19 @@ class TestSocket extends Command
         
         //$client->send(json_encode($params), 'json');
         
-        $this->trap(SIGTERM, function ($client) {
-            // handle the signal
+        $this->trap(
+            SIGTERM,
+            function ($client) {
+                // handle the signal
             
-            $client->close();
-            $this->shouldKeepRunning = false;
-            
-        });
+                $client->close();
+                $this->shouldKeepRunning = false;
+            }
+        );
         
         $i = 0;
         while ($this->shouldKeepRunning) {
             try {
-                
                 // get data
                 $message = $client->receive();
                 $this->line($message . "-" .$i);
