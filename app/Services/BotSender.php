@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\Bot\BinanceSessionData;
+use App\Entity\Bot\BinanceSymbol;
 use App\Entity\Bot\SessionData;
 use App\Models\TelegraphChat;
 use App\Entity\Bot\Symbol;
@@ -102,10 +103,21 @@ class BotSender
      */
     public function sendBinanceSessionData(BinanceSessionData $binanceSessionData, int $percent): void
     {
-        $chunked = $binanceSessionData->getSymbols()->chunk(self::CHUNK_OUTPUT_MESSAGE);
+        /* @var BinanceSymbol $a */
+        /* @var BinanceSymbol $b */
+        $sorted = $binanceSessionData->getSymbols()->sort(function ($a, $b) {
+            if ($a->getChangePrice() == $b->getChangePrice()) {
+                return 0;
+            }
+            return ($a->getChangePrice() > $b->getChangePrice()) ? -1 : 1;
+        });
+        
+        $chunked = $sorted->chunk(self::CHUNK_OUTPUT_MESSAGE);
         foreach ($chunked as $chunk) {
     
             $message[] = "<i>Binance session </i> (" . $percent ."%) 👾";
+            
+            /* @var BinanceSymbol $item */
             foreach ($chunk as $item) {
                 $arrow = ($item->getChangePrice() > 0) ? self::PRICE_UP : self::PRICE_DOWN ;
                 $message[] = "<b>" . $item->getName() . "</b>  (" . $item->getTime() . ")" . $arrow . " " . $item->getChangePrice() . "%";

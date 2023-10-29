@@ -70,8 +70,6 @@ class BinanceProcessor
             if ($symbol) {
                 $bSessionData->addSymbol($symbol);
             }
-            
-            //$observation->save();
         }
         
         return $bSessionData;

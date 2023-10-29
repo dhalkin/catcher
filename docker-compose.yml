@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: catcher/php
-    container_name: app
+    container_name: app-catcher
     restart: unless-stopped
     tty: true
     environment:
@@ -41,7 +41,7 @@ services:
   #MySQL Service
   db:
     image: mysql:8.0.12
-    container_name: db
+    container_name: db-catcher
     restart: unless-stopped
     tty: true
     ports:
@@ -59,7 +59,7 @@ services:
   #Redis Service
   redis:
     image: 'bitnami/redis:7.0'
-    container_name: redis
+    container_name: redis-catcher
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:

@@ -43,4 +43,16 @@ class ClientFactory
             ]
         );
     }
+    
+    /**
+     * @return Client
+     */
+    public function createBybitClient(): Client
+    {
+        return new Client(
+            [
+                'base_uri' => $this->config->get('api.bybit_url')
+            ]
+        );
+    }
 }

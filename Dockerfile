@@ -42,5 +42,5 @@ COPY . /var/www
 #RUN crontab /var/www/cron/root && service cron start
 
 # Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+#EXPOSE 9000
+#CMD ["php-fpm"]

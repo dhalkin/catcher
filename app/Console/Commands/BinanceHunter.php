@@ -7,7 +7,6 @@ use App\Services\Filters\BinanceFilter;
 use App\Services\Processors\BinanceProcessor;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command as CommandAlias;
-use App\Events\GotBinanceFiltered;
 
 /**
  *

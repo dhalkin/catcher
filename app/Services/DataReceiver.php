@@ -94,6 +94,24 @@ class DataReceiver
         throw new \RuntimeException("Unable to get binance");
     }
     
+    
+    /**
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getByBitSpotCurrencies(): array
+    {
+        $t = $this->clientFactory->createBybitClient()
+            ->request('GET', 'v5/market/tickers');
+    
+        if ($t->getStatusCode() == 200) {
+            return (array)json_decode($t->getBody()->getContents());
+        }
+    
+        throw new \RuntimeException("Unable to get binance");
+    }
+    
+    
     /**
      * @return array
      */
