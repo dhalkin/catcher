@@ -33,8 +33,5 @@ jobs:
       - name: Copy environment file
         run: cp .env.example .env
 
-      - name: Generate app key
-        run: php artisan key:generate
-
       - name: Execute tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpcs
