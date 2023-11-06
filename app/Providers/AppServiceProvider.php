@@ -6,7 +6,7 @@ use App\Services\Analyze\Analyzer;
 use App\Services\ClientFactory;
 use App\Services\DataMapper;
 use App\Services\DataReceiver;
-use App\Services\Processors\DataProcessor;
+use App\Services\Processors\CryptoRankProcessor;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,9 +29,9 @@ class AppServiceProvider extends ServiceProvider
         );
         
         $this->app->bind(
-            DataProcessor::class,
+            CryptoRankProcessor::class,
             function () {
-                return new DataProcessor(
+                return new CryptoRankProcessor(
                     $this->app->make(DataMapper::class),
                     $this->app->make(DataReceiver::class),
                     $this->app->make(Analyzer::class)

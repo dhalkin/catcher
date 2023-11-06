@@ -111,6 +111,23 @@ class DataReceiver
         throw new \RuntimeException("Unable to get binance");
     }
     
+    /**
+     * @param  string $symbol
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getBinanceSymbols(): array
+    {
+        $t = $this->clientFactory->createBinanceClient()
+            ->request('GET', 'exchangeInfo', []);
+        
+        if ($t->getStatusCode() == 200) {
+            return (array)json_decode($t->getBody()->getContents());
+        }
+        
+        throw new \RuntimeException("Unable to get binance");
+    }
+    
     
     /**
      * @return array

@@ -14,7 +14,8 @@ use Symfony\Component\Console\Command\Command as CommandAlias;
 class BinanceHunter extends BaseCommand
 {
     /**
-     * The name and signature of the console command.
+     * This is the hunter, he lies in ambush and waits
+     *
      *
      * @var string
      */

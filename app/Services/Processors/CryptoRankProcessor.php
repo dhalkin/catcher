@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 /**
  *
  */
-class DataProcessor
+class CryptoRankProcessor
 {
     /**
      * @var DataMapper

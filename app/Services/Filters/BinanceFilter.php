@@ -29,4 +29,16 @@ class BinanceFilter
         
         return $binanceSessionData->setSymbols($result);
     }
+    
+    
+    public function filterExchangeInfo(array $info): array
+    {
+        $result = [];
+        
+        foreach ($info['symbols'] as $symbolStd) {
+            $result[] = $symbolStd->baseAsset;
+        }
+        
+        return $result;
+    }
 }

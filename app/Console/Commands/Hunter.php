@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Events\CryptorankDataReceived;
 use App\Services\BotSender;
 use App\Services\Filters\BotFilter;
-use App\Services\Processors\DataProcessor;
+use App\Services\Processors\CryptoRankProcessor;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
@@ -34,9 +34,9 @@ class Hunter extends BaseCommand
     private bool $shouldKeepRunning = true;
     
     /**
-     * @var DataProcessor
+     * @var CryptoRankProcessor
      */
-    private DataProcessor $dataProcessor;
+    private CryptoRankProcessor $dataProcessor;
     
     /**
      * @var BotSender
@@ -49,11 +49,11 @@ class Hunter extends BaseCommand
     private BotFilter $botFilter;
     
     /**
-     * @param DataProcessor $dataProcessor
+     * @param CryptoRankProcessor $dataProcessor
      * @param BotSender     $botSender
      * @param BotFilter     $botFilter
      */
-    public function __construct(DataProcessor $dataProcessor, BotSender $botSender, BotFilter $botFilter)
+    public function __construct(CryptoRankProcessor $dataProcessor, BotSender $botSender, BotFilter $botFilter)
     {
         parent::__construct();
         $this->dataProcessor = $dataProcessor;
