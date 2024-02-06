@@ -1,11 +1,12 @@
 version: '3'
 services:
-  
+
   #PHP Service
   app:
     build:
       context: .
       dockerfile: Dockerfile
+    platform: linux/amd64
     image: catcher/php
     container_name: app-catcher
     restart: unless-stopped
@@ -44,6 +45,7 @@ services:
     container_name: db-catcher
     restart: unless-stopped
     tty: true
+    platform: linux/amd64
     ports:
       - "127.0.0.1:3301:3306/tcp"
     environment:
@@ -53,6 +55,7 @@ services:
     volumes:
       - ~/mysql:/var/lib/mysql
       - ./mysql/my.cnf:/etc/mysql/my.cnf
+    #command: mysqld --init-file="/var/lib/mysql/backup.sql"
     networks:
       - catcher-network
 
@@ -60,6 +63,7 @@ services:
   redis:
     image: 'bitnami/redis:7.0'
     container_name: redis-catcher
+    platform: linux/amd64
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
