@@ -1,13 +1,12 @@
 version: '3'
-services:
 
+
+services:
   #PHP Service
   app:
-    build:
-      context: .
-      dockerfile: DockerfileArm
+    build: .
+    image: dhalkin/catcher:latest
     platform: linux/amd64
-    image: catcher/php
     container_name: app-catcher
     restart: unless-stopped
     tty: true
@@ -42,10 +41,10 @@ services:
   #MySQL Service
   db:
     image: mysql:8.0.12
+    platform: linux/amd64
     container_name: db-catcher
     restart: unless-stopped
     tty: true
-    platform: linux/amd64
     ports:
       - "127.0.0.1:3301:3306/tcp"
     environment:
@@ -62,8 +61,8 @@ services:
   #Redis Service
   redis:
     image: 'bitnami/redis:7.0'
-    container_name: redis-catcher
     platform: linux/amd64
+    container_name: redis-catcher
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
