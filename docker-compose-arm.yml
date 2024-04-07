@@ -40,7 +40,7 @@ services:
 
   #MySQL Service
   db:
-    image: mysql:8.0.12
+    image: mysql:8.3.0
     platform: linux/amd64
     container_name: db-catcher
     restart: unless-stopped

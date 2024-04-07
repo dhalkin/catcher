@@ -1,11 +1,10 @@
 version: '3'
-services:
 
+
+services:
   #PHP Service
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     image: dhalkin/catcher:latest
     container_name: app-catcher
     restart: unless-stopped
@@ -40,7 +39,7 @@ services:
 
   #MySQL Service
   db:
-    image: mysql:8.0.12
+    image: mysql:8.3.0
     container_name: db-catcher
     restart: unless-stopped
     tty: true
