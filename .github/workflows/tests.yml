@@ -24,5 +24,8 @@ jobs:
       - name: Copy environment file
         run: cp .env.example .env
 
-      - name: Execute tests
+      - name: Execute static tests
         run: vendor/bin/phpcs -p --colors
+
+      - name: Execute unit tests
+        run: vendor/bin/codecept run Unit

@@ -1,18 +1,37 @@
 <?php
 
+
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\Support\UnitTester;
 
-class ExampleTest extends TestCase
+class ExampleTest extends \Codeception\Test\Unit
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function test_that_true_is_true()
+
+    protected UnitTester $tester;
+
+    protected function _before()
+    {
+    }
+
+    // tests
+    public function testSomeFeature()
     {
         $this->assertTrue(true);
+        sleep(2);
+    }
+
+    // tests
+    public function testSomeFeature2()
+    {
+        $this->assertTrue(true);
+        sleep(2);
+    }
+
+    // tests
+    public function testSomeFeature3()
+    {
+        $this->assertTrue(true);
+        sleep(2);
     }
 }
