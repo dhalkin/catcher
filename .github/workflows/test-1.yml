@@ -9,5 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    steps:
       - name: Show files
         run: ls
