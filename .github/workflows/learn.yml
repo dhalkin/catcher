@@ -1,6 +1,8 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [workflow_dispatch]
+env:
+  DAY_OF_WEEK: Sunday
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
@@ -18,3 +20,5 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
         name: Show repo variable
       - run: echo "variable one is ${{variable.variable1}}"
+        name: Show var in env context
+      - run: echo "Show day of week ${{ env.DAY_OF_WEEK }}"
