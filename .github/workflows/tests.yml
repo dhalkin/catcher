@@ -1,10 +1,5 @@
 name: Tests
-
-on:
-  push:
-    branches:
-      - workflow-training
-  pull_request:
+on: [workflow_dispatch]
 
 permissions:
   contents: read

@@ -1,0 +1,13 @@
+name: Run commands
+run-name: test for ${{ github.ref_name }} (${{ github.ref_type }}) by @${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - workflow-training
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+      - name: Show files
+        run: ls
