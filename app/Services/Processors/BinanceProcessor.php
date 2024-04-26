@@ -49,15 +49,20 @@ class BinanceProcessor
     {
         $time = Carbon::now();
         $nomicsList = Symbol::select('symbol')->distinct()->pluck('symbol')->toArray();
-        
+
+        //@todo use concat
         $symbols = '[';
         foreach ($nomicsList as $s) {
             $symbols .= '"' . $s . 'USDT",';
         }
+        // get rid last ,
         $symbols = rtrim($symbols, ",");
         $symbols .= ']';
-        
+
+
         $response = $this->dataReceiver->getBinanceCurrencies($symbols);
+
+        // prepare session data
         $bSessionData = new BinanceSessionData();
         $bSessionData->setTime($time);
         

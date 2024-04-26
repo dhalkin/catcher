@@ -31,14 +31,14 @@ endif
 .title:
 	$(info $(APP_NAME) v$(VERSION))
 
-.PHONY: build
-build:
-	docker build \
-		--build-arg VERSION=$(VERSION) \
-		--build-arg BUILD_ID=$(BUILD_ID) \
-		-t $(IMAGE_NAME):$(IMAGE_TAG) \
-		--no-cache \
-		--force-rm .
+#.PHONY: build
+#build:
+#	docker build \
+#		--build-arg VERSION=$(VERSION) \
+#		--build-arg BUILD_ID=$(BUILD_ID) \
+#		-t $(IMAGE_NAME):$(IMAGE_TAG) \
+#		--no-cache \
+#		--force-rm .
 
 .PHONY: up-arm
 up-arm: network
