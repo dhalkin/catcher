@@ -63,5 +63,10 @@ down:
 network:
 	docker network create catcher-network 2> /dev/null | true
 
+.PHONY: run-command
+run-command:
+	vendor/bin/phpcs -p --colors
+	vendor/bin/codecept run Unit
+
 %:
 	@:

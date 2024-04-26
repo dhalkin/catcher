@@ -36,3 +36,6 @@ jobs:
 
       - name: Execute unit tests
         run: vendor/bin/codecept run Unit
+
+      - name: Run command from makefile
+        run: make run-command
