@@ -19,6 +19,6 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
         name: Show repo variable
-      - run: echo "variable one is ${{ variable1 }}"
+      - run: echo "variable one is ${{ repo.VARIABLE1 }}"
         name: Show var in env context
       - run: echo "Show day of week ${{ env.DAY_OF_WEEK }}"
