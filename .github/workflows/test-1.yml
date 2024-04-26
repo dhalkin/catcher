@@ -13,6 +13,14 @@ jobs:
       - name: Show files
         run: |
           ls ${{ github.workspace }}
+
       - name: Show folder
         run: |
           pwd
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show files
+        run: |
+          ls ${{ github.workspace }}
