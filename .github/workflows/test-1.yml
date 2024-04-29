@@ -1,5 +1,6 @@
 name: Run commands
 run-name: test for ${{ github.ref_name }} (${{ github.ref_type }}) by @${{ github.actor }}
+# comment
 
 on:
   push:
@@ -24,6 +25,7 @@ jobs:
       - name: Show files
         run: |
           ls ${{ github.workspace }}
+# separate machine
   job-2:
     runs-on: ubuntu-latest
     steps:
