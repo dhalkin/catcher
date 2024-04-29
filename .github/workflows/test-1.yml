@@ -1,6 +1,6 @@
 name: Run commands
 run-name: test for ${{ github.ref_name }} (${{ github.ref_type }}) by @${{ github.actor }}
-# comment
+# comment, context https://docs.github.com/ru/actions/learn-github-actions/contexts
 
 on:
   push:
