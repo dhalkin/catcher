@@ -20,3 +20,14 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: echo "variable one is ${{ vars.VARIABLE1 }}"
       - run: echo "Show day of week ${{ env.DAY_OF_WEEK }}"
+
+      - name: Show Variables
+        env:
+          ALLMYSECRETS: ${{ toJSON(secrets) }}
+          ALLMYVARS: ${{ toJSON(vars) }}
+          ALLMYINPUTS: ${{ toJSON(inputs) }}
+        run: |
+           echo "$ALLMYSECRETS"
+           echo "$ALLMYVARS"
+           echo "$ALLMYINPUTS"
+        shell: bash
