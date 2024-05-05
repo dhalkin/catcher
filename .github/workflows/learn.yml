@@ -30,10 +30,16 @@ jobs:
           ALLMYGITHUBS: ${{ toJSON(github) }}
           ALLMYJOBS: ${{ toJSON(job) }}
         run: |
+          echo  "ALLMYSECRETS"
            echo "$ALLMYSECRETS"
+           echo "ALLMYVARS"
            echo "$ALLMYVARS"
+           echo "ALLMYINPUTS"
            echo "$ALLMYINPUTS"
+           echo "ALLMYRUNNERS"
            echo "$ALLMYRUNNERS"
+           echo "ALLMYGITHUBS"
            echo "$ALLMYGITHUBS"
+           echo "ALLMYJOBS"
            echo "$ALLMYJOBS"
         shell: bash
