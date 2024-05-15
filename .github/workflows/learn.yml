@@ -43,5 +43,6 @@ jobs:
            echo "$ALLMYGITHUBS"
            echo "ALLMYJOBS"
            echo "$ALLMYJOBS"
+           echo "ALLMYENVS"
            echo "$ALLMYENVS"
         shell: bash
