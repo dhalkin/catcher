@@ -29,6 +29,7 @@ jobs:
           ALLMYRUNNERS: ${{ toJSON(runner) }}
           ALLMYGITHUBS: ${{ toJSON(github) }}
           ALLMYJOBS: ${{ toJSON(job) }}
+          ALLMYENVS: ${{ toJson(env) }}
         run: |
           echo  "ALLMYSECRETS"
            echo "$ALLMYSECRETS"
@@ -42,4 +43,5 @@ jobs:
            echo "$ALLMYGITHUBS"
            echo "ALLMYJOBS"
            echo "$ALLMYJOBS"
+           echo "$ALLMYENVS"
         shell: bash
