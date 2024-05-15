@@ -56,7 +56,7 @@ bash-arm: up-arm
 reset: prune up
 
 .PHONY: down-arm
-down:
+down-arm:
 	docker-compose -f docker-compose-arm.yml down
 
 .PHONY: network

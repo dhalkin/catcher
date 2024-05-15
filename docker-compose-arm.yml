@@ -13,7 +13,7 @@ services:
     environment:
       SERVICE_NAME: app
       SERVICE_TAGS: dev
-      PHP_IDE_CONFIG: "serverName=app"
+      PHP_IDE_CONFIG: "serverName=catcher"
     working_dir: /var/www
     volumes:
       - ./:/var/www
